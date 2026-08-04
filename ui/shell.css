@@ -304,3 +304,16 @@ svg.brand-mark {
     border-bottom: 1px solid var(--border);
   }
 }
+
+/* Native <select> dropdown popup (WebView2/Edge): opaque dark options */
+html,
+body,
+select {
+  color-scheme: dark;
+}
+
+select option,
+select optgroup {
+  background: #1a1a1a;
+  color: #f0f0f0;
+}
