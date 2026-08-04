@@ -1,0 +1,3 @@
+# © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
+pywebview>=5.0
+pyinstaller>=6.0

@@ -1,0 +1,229 @@
+/* Hub-style frameless chrome — matches L'Atelier PC Command launcher (pcd-nav),
+ * not the smaller standalone .tool-titlebar. App-local; do not edit vendor kit.
+ */
+
+:root {
+  --hub-titlebar-h: 48px;
+}
+
+html {
+  height: 100%;
+}
+
+body.frameless:not(.pcd-embed) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body.frameless:not(.pcd-embed) .shell {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: hidden;
+}
+
+body.frameless:not(.pcd-embed) .shell .sidebar,
+body.frameless:not(.pcd-embed) aside.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Launcher header strip */
+.pcd-nav {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  flex: 0 0 var(--hub-titlebar-h);
+  height: var(--hub-titlebar-h);
+  padding: 0 0.55rem 0 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, #0b0b0d 92%, transparent);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+body.frameless:not(.pcd-embed) .pcd-nav {
+  display: flex;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+body.frameless:not(.pcd-embed) .pcd-nav a,
+body.frameless:not(.pcd-embed) .pcd-nav button,
+body.frameless:not(.pcd-embed) .pcd-nav input,
+body.frameless:not(.pcd-embed) .pcd-nav .win-controls,
+body.frameless:not(.pcd-embed) .pcd-nav .win-btn {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+body.pcd-embed .pcd-nav,
+body.pcd-embed .hub-resize-edges {
+  display: none !important;
+}
+
+.pcd-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  padding: 0;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.pcd-nav .brand .mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: linear-gradient(145deg, #ff5a68, #b01f35);
+  box-shadow: 0 0 18px rgba(224, 53, 69, 0.45);
+  flex-shrink: 0;
+}
+
+.pcd-nav .brand-title {
+  letter-spacing: 0.02em;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.pcd-nav .brand-atelier {
+  color: #fff;
+  font-weight: 700;
+}
+
+.pcd-nav .brand-product {
+  color: var(--accent, #e03545);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(224, 53, 69, 0.35);
+}
+
+.pcd-nav .hub-tool-name {
+  margin-left: 0.55rem;
+  padding-left: 0.65rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8490a6;
+  letter-spacing: 0.02em;
+}
+
+.pcd-nav .nav-spacer {
+  flex: 1 1 auto;
+  min-width: 0.5rem;
+  align-self: stretch;
+}
+
+.pcd-nav .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.pcd-nav .win-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 0.25rem;
+}
+
+.pcd-nav .win-btn {
+  width: 38px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #8490a6;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.pcd-nav .win-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.pcd-nav .win-btn.win-close:hover {
+  background: #e03545;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(224, 53, 69, 0.35);
+}
+
+.pywebview-drag-region {
+  -webkit-app-region: drag;
+  app-region: drag;
+  user-select: none;
+  cursor: default;
+}
+
+/* Resize grips must stay viewport-fixed — body flex would otherwise demote them. */
+body > .hub-resize-edges {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100000 !important;
+  pointer-events: none !important;
+  flex: 0 0 0 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Invisible INSET edge grips (WebView2 swallows true border hits). */
+.hub-resize-edges {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+body.frameless:not(.pcd-embed) .hub-resize-edge {
+  position: absolute;
+  pointer-events: auto;
+  background: transparent;
+  z-index: 100001;
+  touch-action: none;
+}
+
+body:not(.frameless) .hub-resize-edges,
+body.pcd-embed .hub-resize-edges {
+  display: none;
+}
+
+.hub-resize-edge.n { top: 8px; left: 20px; right: 20px; height: 10px; cursor: ns-resize; }
+.hub-resize-edge.s { bottom: 8px; left: 20px; right: 20px; height: 10px; cursor: ns-resize; }
+.hub-resize-edge.e { top: 20px; right: 8px; bottom: 20px; width: 10px; cursor: ew-resize; }
+.hub-resize-edge.w { top: 20px; left: 8px; bottom: 20px; width: 10px; cursor: ew-resize; }
+.hub-resize-edge.nw { top: 4px; left: 4px; width: 18px; height: 18px; cursor: nwse-resize; }
+.hub-resize-edge.ne { top: 4px; right: 4px; width: 18px; height: 18px; cursor: nesw-resize; }
+.hub-resize-edge.sw { bottom: 4px; left: 4px; width: 18px; height: 18px; cursor: nesw-resize; }
+.hub-resize-edge.se { bottom: 4px; right: 4px; width: 18px; height: 18px; cursor: nwse-resize; }

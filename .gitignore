@@ -1,0 +1,12 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+*.exe
+*.exe.protaudit/
+_unitconvert_update_finish.cmd

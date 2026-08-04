@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed -->
+  <meta name="author" content="Mr-Aurevo-X" />
+  <meta name="copyright" content="Copyright © 2026 Mr-Aurevo-X. All rights reserved." />
+  <title>UnitConvert — L'Atelier PC Command</title>
+  <link rel="stylesheet" href="vendor/pc-command-kit/tokens/kit.css" />
+  <link rel="stylesheet" href="vendor/pc-command-kit/components/embed.css" />
+  <link rel="stylesheet" href="fonts/fonts.css" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="shell.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="hub-chrome.css" />
+  <script>
+    (function () {
+      try {
+        if (/(?:^|[?&])embed=1(?:&|$)/.test(location.search || "")) {
+          document.documentElement.classList.add("pcd-embed");
+          document.addEventListener("DOMContentLoaded", function () {
+            if (document.body) document.body.classList.add("pcd-embed");
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body data-tool-title="UnitConvert">
+  <header class="pcd-nav" id="hubTitlebar">
+    <div class="brand pywebview-drag-region" title="L'Atelier PC Command" id="hubBrand">
+      <span class="mark" aria-hidden="true">PC</span>
+      <strong class="brand-title">
+        <span class="brand-atelier">L'Atelier</span>
+        <span class="brand-product">PC Command</span>
+      </strong>
+      <span class="hub-tool-name">UnitConvert</span>
+    </div>
+    <div class="nav-spacer pywebview-drag-region" aria-hidden="true"></div>
+    <div class="nav-right">
+      <div class="win-controls" role="group" aria-label="Fenêtre">
+        <button type="button" class="win-btn" id="winMin" title="Réduire" aria-label="Réduire">─</button>
+        <button type="button" class="win-btn" id="winMax" title="Agrandir" aria-label="Agrandir">□</button>
+        <button type="button" class="win-btn win-close" id="winClose" title="Fermer" aria-label="Fermer">×</button>
+      </div>
+    </div>
+  </header>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg class="brand-mark" width="40" height="40" viewBox="0 0 64 64" role="img" aria-label="UnitConvert" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="14" fill="#0b0b0d"/>
+          <rect x="10" y="24" width="44" height="16" rx="4" fill="#3ec7ff"/>
+          <rect x="16" y="24" width="2" height="8" fill="#0b0b0d"/>
+          <rect x="24" y="24" width="2" height="11" fill="#0b0b0d"/>
+          <rect x="32" y="24" width="2" height="8" fill="#0b0b0d"/>
+          <rect x="40" y="24" width="2" height="11" fill="#0b0b0d"/>
+          <rect x="48" y="24" width="2" height="8" fill="#0b0b0d"/>
+          <path d="M12 48 h20 M32 44 l6 4 l-6 4" fill="none" stroke="#eef2f8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="brand-text">
+          <h1>UnitConvert</h1>
+          <p data-i18n="tagline">Unités · 100 % local</p>
+        </div>
+      </div>
+      <div class="badge-row">
+        <span class="badge">LOCAL</span>
+        <span class="badge free" data-i18n="badgeFree">100 % gratuit</span>
+      </div>
+      <div class="feature-desc" id="featureDesc">
+        <strong data-i18n="featuresTitle">Catégories</strong>
+        <span data-i18n="features">Longueur, masse, température, surface, volume, données, vitesse, temps — conversion live, copie.</span>
+      </div>
+      <ul class="legal-strip" id="legalStrip">
+        <li data-i18n="legalFree">100 % gratuit</li>
+        <li data-i18n="legalLocal">100 % local — aucun cloud, aucune télémétrie</li>
+        <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
+      </ul>
+      <p class="privacy-note" id="privacyNote"
+        data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Conversions 100 % locales (facteurs embarqués). Seul appel réseau optionnel : vérif. de mise à jour GitHub."
+        data-privacy-en="Mr-Aurevo-X does not collect your data. 100% local conversions (embedded factors). Only optional network call: GitHub update check.">
+        Mr-Aurevo-X ne collecte aucune donnée. Conversions 100 % locales (facteurs embarqués). Seul appel réseau optionnel : vérif. de mise à jour GitHub.
+      </p>
+      <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
+      <button type="button" class="btn about-btn" id="btnAbout" data-i18n="btnAbout">À propos</button>
+    </aside>
+
+    <div class="main">
+      <header class="page-header">
+        <h2 data-i18n="title">UnitConvert</h2>
+        <p id="meta" data-i18n="subtitle">Conversion live · facteurs locaux</p>
+      </header>
+
+      <div class="update-banner" id="updateBanner" hidden role="status" aria-live="polite">
+        <div class="update-banner-text">
+          <strong id="updateTitle" data-i18n="updateTitle">Nouvelle version disponible</strong>
+          <span id="updateDetail"></span>
+        </div>
+        <div class="update-banner-actions">
+          <button type="button" class="btn accent" id="btnUpdateNow" data-i18n="btnUpdate">Mettre à jour</button>
+          <button type="button" class="btn ghost" id="btnUpdateLater" data-i18n="btnLater">Plus tard</button>
+        </div>
+      </div>
+
+      <div class="mode-tabs" id="categoryTabs" role="tablist"></div>
+
+      <div class="panel convert-panel">
+        <div class="convert-row">
+          <label class="field conv-field">
+            <span data-i18n="fromLabel">De</span>
+            <input id="fromValue" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1" />
+            <select id="fromUnit"></select>
+          </label>
+          <button type="button" class="btn swap-btn" id="btnSwap" title="Inverser" aria-label="Inverser">⇅</button>
+          <label class="field conv-field">
+            <span data-i18n="toLabel">Vers</span>
+            <input id="toValue" type="text" readonly value="" />
+            <select id="toUnit"></select>
+          </label>
+        </div>
+        <div class="toolbar">
+          <button type="button" class="btn accent" id="btnCopy" data-i18n="btnCopy">Copier le résultat</button>
+          <button type="button" class="btn" id="btnCopyPair" data-i18n="btnCopyPair">Copier « X = Y »</button>
+        </div>
+        <p class="conv-formula" id="convFormula"></p>
+      </div>
+
+      <div class="panel common-panel">
+        <h3 data-i18n="commonTitle">Conversions courantes</h3>
+        <div class="common-grid" id="commonGrid"></div>
+      </div>
+
+      <p class="status" id="status"></p>
+    </div>
+  </div>
+
+  <dialog class="about-dialog" id="aboutDialog">
+    <form method="dialog" class="about-card">
+      <h3 data-i18n="aboutTitle">À propos — UnitConvert</h3>
+      <p data-i18n="aboutBody">Convertisseur d'unités Mr-Aurevo-X. 100 % gratuit, 100 % local (facteurs embarqués, aucun réseau pour convertir). Mise à jour non garantie (pas d'obligation). L'app peut vérifier GitHub Releases et proposer une mise à jour.</p>
+      <ul>
+        <li data-i18n="legalFree">100 % gratuit</li>
+        <li data-i18n="legalLocal">100 % local — aucun cloud, aucune télémétrie</li>
+        <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
+      </ul>
+      <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
+      <p class="about-note" data-i18n="aboutRights">Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.</p>
+      <button type="submit" class="btn accent" data-i18n="btnClose">Fermer</button>
+    </form>
+  </dialog>
+
+  <script src="hub-chrome.js"></script>
+  <script src="suite-boot.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
