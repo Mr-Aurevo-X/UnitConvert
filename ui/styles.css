@@ -92,6 +92,14 @@
   padding: 9px 10px;
   font: inherit;
 }
+/* Native <select> popup: WebView2/Edge composites a translucent select
+   background to white, leaving light option text unreadable. Force opaque,
+   theme-aware colors on the option list. */
+select option,
+select optgroup {
+  background-color: var(--panel2);
+  color: var(--text);
+}
 .swap-btn {
   width: 46px;
   height: 46px;
