@@ -1,4 +1,25 @@
 /* © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed */
+.top-mode-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.top-mode-tab {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.top-mode-tab.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: #fff;
+}
 .mode-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -28,6 +49,12 @@
 .badge.free {
   border-color: rgba(61, 214, 140, 0.45);
   color: #9dffc8;
+  background: rgba(61, 214, 140, 0.12);
+}
+.badge.ecb {
+  border-color: rgba(62, 199, 255, 0.45);
+  color: #a7e6ff;
+  background: rgba(62, 199, 255, 0.12);
 }
 .legal-strip {
   list-style: none;
@@ -46,6 +73,45 @@
 .about-btn {
   margin-top: auto;
   width: 100%;
+}
+
+.rate-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.rate-info {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.rate-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--warn);
+  background: rgba(240, 163, 58, 0.14);
+  border: 1px solid rgba(240, 163, 58, 0.4);
+}
+.rate-badge[hidden] { display: none; }
+.refresh-btn {
+  margin-left: auto;
+  height: 34px;
+  padding: 0 14px;
+}
+.disclaimer {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: 14px;
 }
 
 .convert-panel {

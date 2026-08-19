@@ -64,7 +64,7 @@
           <p data-i18n="tagline">Unités · 100 % local</p>
         </div>
       </div>
-      <div class="badge-row">
+      <div class="badge-row" id="badgeRow">
         <span class="badge">LOCAL</span>
         <span class="badge free" data-i18n="badgeFree">100 % gratuit</span>
       </div>
@@ -78,9 +78,9 @@
         <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
       </ul>
       <p class="privacy-note" id="privacyNote"
-        data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Conversions 100 % locales (facteurs embarqués). Seul appel réseau optionnel : vérif. de mise à jour GitHub."
-        data-privacy-en="Mr-Aurevo-X does not collect your data. 100% local conversions (embedded factors). Only optional network call: GitHub update check.">
-        Mr-Aurevo-X ne collecte aucune donnée. Conversions 100 % locales (facteurs embarqués). Seul appel réseau optionnel : vérif. de mise à jour GitHub.
+        data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle."
+        data-privacy-en="Mr-Aurevo-X does not collect your data. Unit conversions are 100% local. Currencies: Frankfurter (ECB) rates over HTTPS, local cache. Optional GitHub update check.">
+        Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle.
       </p>
       <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
       <button type="button" class="btn about-btn" id="btnAbout" data-i18n="btnAbout">À propos</button>
@@ -103,32 +103,72 @@
         </div>
       </div>
 
-      <div class="mode-tabs" id="categoryTabs" role="tablist"></div>
-
-      <div class="panel convert-panel">
-        <div class="convert-row">
-          <label class="field conv-field">
-            <span data-i18n="fromLabel">De</span>
-            <input id="fromValue" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1" />
-            <select id="fromUnit"></select>
-          </label>
-          <button type="button" class="btn swap-btn" id="btnSwap" title="Inverser" aria-label="Inverser">⇅</button>
-          <label class="field conv-field">
-            <span data-i18n="toLabel">Vers</span>
-            <input id="toValue" type="text" readonly value="" />
-            <select id="toUnit"></select>
-          </label>
-        </div>
-        <div class="toolbar">
-          <button type="button" class="btn accent" id="btnCopy" data-i18n="btnCopy">Copier le résultat</button>
-          <button type="button" class="btn" id="btnCopyPair" data-i18n="btnCopyPair">Copier « X = Y »</button>
-        </div>
-        <p class="conv-formula" id="convFormula"></p>
+      <div class="top-mode-tabs" id="topModeTabs" role="tablist">
+        <button type="button" class="top-mode-tab active" data-mode="units" data-i18n="tabUnits">Unités</button>
+        <button type="button" class="top-mode-tab" data-mode="currency" data-i18n="tabCurrency">Devises</button>
       </div>
 
-      <div class="panel common-panel">
-        <h3 data-i18n="commonTitle">Conversions courantes</h3>
-        <div class="common-grid" id="commonGrid"></div>
+      <div id="unitsPanel">
+        <div class="mode-tabs" id="categoryTabs" role="tablist"></div>
+
+        <div class="panel convert-panel">
+          <div class="convert-row">
+            <label class="field conv-field">
+              <span data-i18n="fromLabel">De</span>
+              <input id="fromValue" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1" />
+              <select id="fromUnit"></select>
+            </label>
+            <button type="button" class="btn swap-btn" id="btnSwap" title="Inverser" aria-label="Inverser">⇅</button>
+            <label class="field conv-field">
+              <span data-i18n="toLabel">Vers</span>
+              <input id="toValue" type="text" readonly value="" />
+              <select id="toUnit"></select>
+            </label>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn accent" id="btnCopy" data-i18n="btnCopy">Copier le résultat</button>
+            <button type="button" class="btn" id="btnCopyPair" data-i18n="btnCopyPair">Copier « X = Y »</button>
+          </div>
+          <p class="conv-formula" id="convFormula"></p>
+        </div>
+
+        <div class="panel common-panel">
+          <h3 data-i18n="commonTitle">Conversions courantes</h3>
+          <div class="common-grid" id="commonGrid"></div>
+        </div>
+      </div>
+
+      <div id="currencyPanel" hidden>
+        <div class="rate-bar">
+          <span class="rate-info" id="rateInfo"></span>
+          <span class="rate-badge" id="offlineBadge" hidden></span>
+          <button type="button" class="btn refresh-btn" id="btnRefresh" data-i18n="btnRefresh">Actualiser</button>
+        </div>
+
+        <div class="panel convert-panel">
+          <div class="convert-row">
+            <label class="field conv-field">
+              <span data-i18n="amountLabel">Montant</span>
+              <input id="amount" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="100" />
+              <select id="fromCode"></select>
+            </label>
+            <button type="button" class="btn swap-btn" id="btnSwapCurrency" title="Inverser" aria-label="Inverser">⇅</button>
+            <label class="field conv-field">
+              <span data-i18n="resultLabel">Résultat</span>
+              <input id="result" type="text" readonly value="" />
+              <select id="toCode"></select>
+            </label>
+          </div>
+          <div class="toolbar">
+            <button type="button" class="btn accent" id="btnCopyCurrency" data-i18n="btnCopy">Copier le résultat</button>
+            <button type="button" class="btn" id="btnCopyPairCurrency" data-i18n="btnCopyPair">Copier « X = Y »</button>
+          </div>
+          <p class="conv-formula" id="convFormulaCurrency"></p>
+        </div>
+
+        <p class="disclaimer" id="disclaimer" data-i18n="disclaimer">
+          Taux indicatifs BCE (via Frankfurter). Ceci n'est pas un conseil financier. La disponibilité et la mise à jour des taux ne sont pas garanties.
+        </p>
       </div>
 
       <p class="status" id="status"></p>
@@ -138,10 +178,11 @@
   <dialog class="about-dialog" id="aboutDialog">
     <form method="dialog" class="about-card">
       <h3 data-i18n="aboutTitle">À propos — UnitConvert</h3>
-      <p data-i18n="aboutBody">Convertisseur d'unités Mr-Aurevo-X. 100 % gratuit, 100 % local (facteurs embarqués, aucun réseau pour convertir). Mise à jour non garantie (pas d'obligation). L'app peut vérifier GitHub Releases et proposer une mise à jour.</p>
+      <p data-i18n="aboutBody">Convertisseur d'unités et de devises Mr-Aurevo-X. Unités 100 % locales ; devises via Frankfurter (BCE), cache hors ligne. Gratuit, sans compte ni clé API. Mise à jour non garantie.</p>
       <ul>
         <li data-i18n="legalFree">100 % gratuit</li>
-        <li data-i18n="legalLocal">100 % local — aucun cloud, aucune télémétrie</li>
+        <li data-i18n="legalLocal">Unités 100 % locales — aucune télémétrie</li>
+        <li data-i18n="legalRates">Devises : taux indicatifs BCE via Frankfurter (HTTPS)</li>
         <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
       </ul>
       <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>

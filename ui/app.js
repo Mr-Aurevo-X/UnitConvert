@@ -1,30 +1,41 @@
 /**
  * UnitConvert — UI (proprietary)
- * © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
+ * © 2026 Mr-Aurevo-X · UnitConvert · free · updates not guaranteed
+ * Units 100% local · currencies via Frankfurter (ex-DeviseConvert)
  * All rights reserved. Do not strip copyright notices.
  */
 (() => {
   "use strict";
-  // © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
+  // © 2026 Mr-Aurevo-X · UnitConvert · free · updates not guaranteed
 
   const SUITE_I18N = {
     fr: {
       tagline: "Unités · 100 % local",
+      taglineCurrency: "Devises · taux BCE",
       copyright: "Copyright © 2026 Mr-Aurevo-X — tous droits réservés",
       title: "UnitConvert",
       subtitle: "Conversion live · facteurs locaux",
+      subtitleCurrency: "Conversion de devises · taux BCE",
+      tabUnits: "Unités",
+      tabCurrency: "Devises",
       featuresTitle: "Catégories",
       features:
         "Longueur, masse, température, surface, volume, données, vitesse, temps — conversion live, copie.",
+      featuresTitleCurrency: "Devises",
+      featuresCurrency:
+        "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — taux BCE en direct (Frankfurter), cache hors ligne, inversion, copie.",
       privacy:
-        "Mr-Aurevo-X ne collecte aucune donnée. Conversions 100 % locales (facteurs embarqués). Seul appel réseau optionnel : vérif. de mise à jour GitHub.",
+        "Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle.",
       badgeFree: "100 % gratuit",
+      badgeEcb: "Taux BCE",
       legalFree: "100 % gratuit",
-      legalLocal: "100 % local — aucun cloud, aucune télémétrie",
+      legalLocal: "Unités 100 % locales — aucune télémétrie",
+      legalRates: "Devises : taux indicatifs BCE via Frankfurter (HTTPS)",
+      legalOffline: "Devises : réseau optionnel — cache local hors ligne",
       legalUpdates: "Mise à jour non garantie — vérif. optionnelle GitHub",
       aboutTitle: "À propos — UnitConvert",
       aboutBody:
-        "Convertisseur d'unités Mr-Aurevo-X. 100 % gratuit, 100 % local (facteurs embarqués, aucun réseau pour convertir). Mise à jour non garantie (pas d'obligation). L'app peut vérifier GitHub Releases et proposer une mise à jour.",
+        "Convertisseur d'unités et de devises Mr-Aurevo-X. Unités 100 % locales ; devises via Frankfurter (BCE), cache hors ligne. Gratuit, sans compte ni clé API. Mise à jour non garantie.",
       aboutRights:
         "Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.",
       btnAbout: "À propos",
@@ -40,12 +51,23 @@
       ready: "Prêt",
       fromLabel: "De",
       toLabel: "Vers",
+      amountLabel: "Montant",
+      resultLabel: "Résultat",
       btnCopy: "Copier le résultat",
       btnCopyPair: "Copier « X = Y »",
+      btnRefresh: "Actualiser",
+      refreshing: "Actualisation…",
       commonTitle: "Conversions courantes",
       copied: "Copié",
       copyFail: "Copie impossible",
       invalidNumber: "Nombre invalide",
+      invalidAmount: "Montant invalide",
+      rateLive: "Taux en direct du {date}",
+      rateCache: "Cache — taux du {date}",
+      rateSnapshot: "Taux embarqués (démo) — {date}",
+      offline: "hors ligne",
+      disclaimer:
+        "Taux indicatifs BCE (via Frankfurter). Ceci n'est pas un conseil financier. La disponibilité et la mise à jour des taux ne sont pas garanties.",
       catLength: "Longueur",
       catMass: "Masse",
       catTemperature: "Température",
@@ -57,21 +79,31 @@
     },
     en: {
       tagline: "Units · 100% local",
+      taglineCurrency: "Currencies · ECB rates",
       copyright: "Copyright © 2026 Mr-Aurevo-X — all rights reserved",
       title: "UnitConvert",
       subtitle: "Live conversion · local factors",
+      subtitleCurrency: "Currency conversion · ECB rates",
+      tabUnits: "Units",
+      tabCurrency: "Currencies",
       featuresTitle: "Categories",
       features:
         "Length, mass, temperature, area, volume, data, speed, time — live conversion, copy.",
+      featuresTitleCurrency: "Currencies",
+      featuresCurrency:
+        "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — live ECB rates (Frankfurter), offline cache, invert, copy.",
       privacy:
-        "Mr-Aurevo-X does not collect your data. 100% local conversions (embedded factors). Only optional network call: GitHub update check.",
+        "Mr-Aurevo-X does not collect your data. Unit conversions are 100% local. Currencies: Frankfurter (ECB) rates over HTTPS, local cache. Optional GitHub update check.",
       badgeFree: "100% free",
+      badgeEcb: "ECB rates",
       legalFree: "100% free",
-      legalLocal: "100% local — no cloud, no telemetry",
+      legalLocal: "Units 100% local — no telemetry",
+      legalRates: "Currencies: indicative ECB rates via Frankfurter (HTTPS)",
+      legalOffline: "Currencies: network optional — local offline cache",
       legalUpdates: "Updates not guaranteed — optional GitHub check",
       aboutTitle: "About — UnitConvert",
       aboutBody:
-        "Mr-Aurevo-X unit converter. 100% free, 100% local (embedded factors, no network to convert). Updates not guaranteed (no obligation). The app can check GitHub Releases and offer an update.",
+        "Mr-Aurevo-X unit and currency converter. Units 100% local; currencies via Frankfurter (ECB), offline cache. Free, no account or API key. Updates not guaranteed.",
       aboutRights:
         "Redistribution, reverse engineering, or stripping copyright is forbidden without written consent.",
       btnAbout: "About",
@@ -87,12 +119,23 @@
       ready: "Ready",
       fromLabel: "From",
       toLabel: "To",
+      amountLabel: "Amount",
+      resultLabel: "Result",
       btnCopy: "Copy result",
       btnCopyPair: "Copy “X = Y”",
+      btnRefresh: "Refresh",
+      refreshing: "Refreshing…",
       commonTitle: "Common conversions",
       copied: "Copied",
       copyFail: "Copy failed",
       invalidNumber: "Invalid number",
+      invalidAmount: "Invalid amount",
+      rateLive: "Live rates as of {date}",
+      rateCache: "Cache — rates of {date}",
+      rateSnapshot: "Bundled (demo) rates — {date}",
+      offline: "offline",
+      disclaimer:
+        "Indicative ECB rates (via Frankfurter). This is not financial advice. Rate availability and updates are not guaranteed.",
       catLength: "Length",
       catMass: "Mass",
       catTemperature: "Temperature",
@@ -120,16 +163,32 @@
   const t = (key) => (SUITE_I18N[suiteLang] && SUITE_I18N[suiteLang][key]) || SUITE_I18N.fr[key] || key;
 
   const state = {
+    topMode: "units",
     registry: [],
     category: "length",
     fromUnit: "m",
     toUnit: "ft",
     value: "1",
     result: null,
+    currencies: [],
+    rates: {},
+    currencyDate: null,
+    currencySource: "snapshot",
+    currencyFrom: "EUR",
+    currencyTo: "USD",
+    currencyAmount: "100",
+    currencyResult: null,
   };
 
   const el = {
     status: document.getElementById("status"),
+    topModeTabs: document.getElementById("topModeTabs"),
+    unitsPanel: document.getElementById("unitsPanel"),
+    currencyPanel: document.getElementById("currencyPanel"),
+    badgeRow: document.getElementById("badgeRow"),
+    featureDesc: document.getElementById("featureDesc"),
+    legalStrip: document.getElementById("legalStrip"),
+    meta: document.getElementById("meta"),
     categoryTabs: document.getElementById("categoryTabs"),
     fromValue: document.getElementById("fromValue"),
     toValue: document.getElementById("toValue"),
@@ -140,6 +199,17 @@
     btnCopyPair: document.getElementById("btnCopyPair"),
     convFormula: document.getElementById("convFormula"),
     commonGrid: document.getElementById("commonGrid"),
+    rateInfo: document.getElementById("rateInfo"),
+    offlineBadge: document.getElementById("offlineBadge"),
+    btnRefresh: document.getElementById("btnRefresh"),
+    amount: document.getElementById("amount"),
+    result: document.getElementById("result"),
+    fromCode: document.getElementById("fromCode"),
+    toCode: document.getElementById("toCode"),
+    btnSwapCurrency: document.getElementById("btnSwapCurrency"),
+    btnCopyCurrency: document.getElementById("btnCopyCurrency"),
+    btnCopyPairCurrency: document.getElementById("btnCopyPairCurrency"),
+    convFormulaCurrency: document.getElementById("convFormulaCurrency"),
     btnAbout: document.getElementById("btnAbout"),
     aboutDialog: document.getElementById("aboutDialog"),
     updateBanner: document.getElementById("updateBanner"),
@@ -150,6 +220,7 @@
   };
 
   let pendingRemoteVersion = null;
+  let currencyBooted = false;
 
   function apiReady() {
     return new Promise((resolve) => {
@@ -161,6 +232,14 @@
 
   function setStatus(msg) {
     el.status.textContent = msg || "";
+  }
+
+  function formatMoney(n) {
+    if (n == null || !isFinite(n)) return "—";
+    return new Intl.NumberFormat(suiteLang === "en" ? "en-US" : "fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    }).format(n);
   }
 
   function currentCat() {
@@ -178,11 +257,67 @@
   }
 
   function localConvert(value, fromU, toU, cat) {
-    // Local mirror of host math for instant common-grid rendering.
-    if (cat.id === "temperature") return null; // done server-side
+    if (cat.id === "temperature") return null;
     const units = cat.unitFactors;
     if (!units || units[fromU] == null || units[toU] == null) return null;
     return (value * units[fromU]) / units[toU];
+  }
+
+  function updateSidebarForMode() {
+    const taglineEl = document.querySelector(".brand-text p[data-i18n='tagline']");
+    if (state.topMode === "currency") {
+      if (taglineEl) taglineEl.textContent = t("taglineCurrency");
+      if (el.meta) el.meta.textContent = t("subtitleCurrency");
+      if (el.featureDesc) {
+        el.featureDesc.innerHTML =
+          `<strong>${t("featuresTitleCurrency")}</strong> <span>${t("featuresCurrency")}</span>`;
+      }
+      if (el.badgeRow) {
+        el.badgeRow.innerHTML =
+          `<span class="badge free">${t("badgeFree")}</span>` +
+          `<span class="badge ecb">${t("badgeEcb")}</span>`;
+      }
+      if (el.legalStrip) {
+        el.legalStrip.innerHTML =
+          `<li>${t("legalFree")}</li>` +
+          `<li>${t("legalRates")}</li>` +
+          `<li>${t("legalOffline")}</li>` +
+          `<li>${t("legalUpdates")}</li>`;
+      }
+    } else {
+      if (taglineEl) taglineEl.textContent = t("tagline");
+      if (el.meta) el.meta.textContent = t("subtitle");
+      if (el.featureDesc) {
+        el.featureDesc.innerHTML =
+          `<strong>${t("featuresTitle")}</strong> <span>${t("features")}</span>`;
+      }
+      if (el.badgeRow) {
+        el.badgeRow.innerHTML =
+          `<span class="badge">LOCAL</span>` +
+          `<span class="badge free">${t("badgeFree")}</span>`;
+      }
+      if (el.legalStrip) {
+        el.legalStrip.innerHTML =
+          `<li>${t("legalFree")}</li>` +
+          `<li>${t("legalLocal")}</li>` +
+          `<li>${t("legalUpdates")}</li>`;
+      }
+    }
+  }
+
+  function setTopMode(mode) {
+    state.topMode = mode;
+    el.topModeTabs.querySelectorAll(".top-mode-tab").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+    el.unitsPanel.hidden = mode !== "units";
+    el.currencyPanel.hidden = mode !== "currency";
+    updateSidebarForMode();
+    setStatus(t("ready"));
+    if (mode === "currency" && !currencyBooted) {
+      currencyBooted = true;
+      bootCurrency();
+    }
   }
 
   function renderCategoryTabs() {
@@ -199,19 +334,25 @@
         state.toUnit = c.units.includes(pair[1]) ? pair[1] : (c.units[1] || c.units[0]);
         renderCategoryTabs();
         renderUnitSelects();
-        convert();
+        convertUnits();
       });
       el.categoryTabs.appendChild(btn);
     });
   }
 
-  function fillSelect(sel, units, selected) {
+  function fillSelect(sel, items, selected, labelFn) {
     sel.innerHTML = "";
-    units.forEach((u) => {
+    items.forEach((item) => {
       const o = document.createElement("option");
-      o.value = u;
-      o.textContent = u;
-      if (u === selected) o.selected = true;
+      if (typeof item === "string") {
+        o.value = item;
+        o.textContent = labelFn ? labelFn(item) : item;
+      } else {
+        o.value = item.code || item;
+        o.textContent = labelFn ? labelFn(item) : `${item.code} — ${item.name}`;
+      }
+      const val = typeof item === "string" ? item : item.code;
+      if (val === selected) o.selected = true;
       sel.appendChild(o);
     });
   }
@@ -223,7 +364,7 @@
     fillSelect(el.toUnit, cat.units, state.toUnit);
   }
 
-  async function convert() {
+  async function convertUnits() {
     const api = await apiReady();
     const cat = currentCat();
     if (!cat) return;
@@ -281,19 +422,119 @@
       cell.addEventListener("click", () => {
         state.toUnit = u;
         renderUnitSelects();
-        convert();
+        convertUnits();
       });
       el.commonGrid.appendChild(cell);
     }
   }
 
-  function swap() {
+  function swapUnits() {
     const a = state.fromUnit;
     state.fromUnit = state.toUnit;
     state.toUnit = a;
     if (el.toValue.value) el.fromValue.value = el.toValue.value;
     renderUnitSelects();
-    convert();
+    convertUnits();
+  }
+
+  function applyCurrencyState(s) {
+    if (!s || !s.ok) return;
+    state.currencies = s.currencies || [];
+    state.rates = s.rates || {};
+    state.currencyDate = s.date;
+    state.currencySource = s.source || "snapshot";
+    if (!state.rates[state.currencyFrom]) state.currencyFrom = "EUR";
+    if (!state.rates[state.currencyTo]) state.currencyTo = "USD";
+    renderRateBar();
+  }
+
+  function renderRateBar() {
+    const dateStr = state.currencyDate || "—";
+    let key = "rateSnapshot";
+    if (state.currencySource === "live") key = "rateLive";
+    else if (state.currencySource === "cache") key = "rateCache";
+    el.rateInfo.textContent = t(key).replace("{date}", dateStr);
+    if (state.currencySource !== "live") {
+      el.offlineBadge.textContent = t("offline");
+      el.offlineBadge.hidden = false;
+    } else {
+      el.offlineBadge.hidden = true;
+    }
+  }
+
+  function renderCurrencySelects() {
+    fillSelect(el.fromCode, state.currencies, state.currencyFrom, (c) => `${c.code} — ${c.name}`);
+    fillSelect(el.toCode, state.currencies, state.currencyTo, (c) => `${c.code} — ${c.name}`);
+  }
+
+  function convertCurrency() {
+    const raw = String(el.amount.value || "").trim().replace(",", ".");
+    if (raw === "" || raw === "-" || isNaN(Number(raw))) {
+      el.result.value = "";
+      el.convFormulaCurrency.textContent = "";
+      if (raw !== "") setStatus(t("invalidAmount"));
+      return;
+    }
+    const amt = Number(raw);
+    state.currencyAmount = raw;
+    const rf = state.rates[state.currencyFrom];
+    const rt = state.rates[state.currencyTo];
+    if (rf == null || rt == null) {
+      el.result.value = "";
+      return;
+    }
+    const res = (amt / rf) * rt;
+    const unit = (1 / rf) * rt;
+    state.currencyResult = res;
+    el.result.value = formatMoney(res);
+    el.convFormulaCurrency.textContent =
+      `${formatMoney(amt)} ${state.currencyFrom} = ${formatMoney(res)} ${state.currencyTo}  ·  1 ${state.currencyFrom} = ${formatMoney(unit)} ${state.currencyTo}`;
+    setStatus(t("ready"));
+  }
+
+  async function refreshRates() {
+    const api = await apiReady();
+    const refreshFn = (api && (api.refresh_rates || api.refresh)) || null;
+    if (!refreshFn) return;
+    el.btnRefresh.disabled = true;
+    setStatus(t("refreshing"));
+    try {
+      const s = await refreshFn.call(api);
+      applyCurrencyState(s);
+      renderCurrencySelects();
+      convertCurrency();
+      setStatus(t("ready"));
+    } catch (_) {
+      setStatus(t("ready"));
+    } finally {
+      el.btnRefresh.disabled = false;
+    }
+  }
+
+  function swapCurrency() {
+    const a = state.currencyFrom;
+    state.currencyFrom = state.currencyTo;
+    state.currencyTo = a;
+    if (el.result.value) {
+      const cleaned = el.result.value.replace(/\s/g, "").replace(",", ".").replace(/[^\d.-]/g, "");
+      if (cleaned && !isNaN(Number(cleaned))) el.amount.value = cleaned;
+    }
+    renderCurrencySelects();
+    convertCurrency();
+  }
+
+  async function bootCurrency() {
+    const api = await apiReady();
+    const getState = (api && (api.get_currency_state || api.get_state)) || null;
+    if (getState) {
+      try {
+        const s = await getState.call(api);
+        applyCurrencyState(s);
+      } catch (_) {}
+    }
+    renderCurrencySelects();
+    convertCurrency();
+    setTimeout(() => refreshRates(), 200);
   }
 
   async function copyText(text) {
@@ -350,10 +591,18 @@
   function refreshChromeLabels() {
     el.btnCopy.textContent = t("btnCopy");
     el.btnCopyPair.textContent = t("btnCopyPair");
+    el.btnCopyCurrency.textContent = t("btnCopy");
+    el.btnCopyPairCurrency.textContent = t("btnCopyPair");
+    el.btnRefresh.textContent = t("btnRefresh");
     el.btnAbout.textContent = t("btnAbout");
+    el.topModeTabs.querySelectorAll(".top-mode-tab").forEach((btn) => {
+      const key = btn.dataset.mode === "currency" ? "tabCurrency" : "tabUnits";
+      btn.textContent = t(key);
+    });
     if (el.updateTitle) el.updateTitle.textContent = t("updateTitle");
     if (el.btnUpdateNow) el.btnUpdateNow.textContent = t("btnUpdate");
     if (el.btnUpdateLater) el.btnUpdateLater.textContent = t("btnLater");
+    updateSidebarForMode();
   }
 
   function showUpdateBanner(info) {
@@ -408,13 +657,39 @@
     } catch (_) {}
   }
 
-  el.fromValue.addEventListener("input", convert);
-  el.fromUnit.addEventListener("change", (e) => { state.fromUnit = e.target.value; convert(); });
-  el.toUnit.addEventListener("change", (e) => { state.toUnit = e.target.value; convert(); });
-  el.btnSwap.addEventListener("click", swap);
+  async function loadFactors(api) {
+    for (const cat of state.registry) {
+      if (cat.id === "temperature") continue;
+      const factors = {};
+      for (const u of cat.units) {
+        try {
+          const r = await api.convert(cat.id, 1, u, cat.base);
+          factors[u] = r && r.ok ? r.result : null;
+        } catch (_) { factors[u] = null; }
+      }
+      factors[cat.base] = 1;
+      cat.unitFactors = factors;
+    }
+  }
+
+  el.topModeTabs.querySelectorAll(".top-mode-tab").forEach((btn) => {
+    btn.addEventListener("click", () => setTopMode(btn.dataset.mode));
+  });
+  el.fromValue.addEventListener("input", convertUnits);
+  el.fromUnit.addEventListener("change", (e) => { state.fromUnit = e.target.value; convertUnits(); });
+  el.toUnit.addEventListener("change", (e) => { state.toUnit = e.target.value; convertUnits(); });
+  el.btnSwap.addEventListener("click", swapUnits);
   el.btnCopy.addEventListener("click", () => copyText(el.toValue.value || ""));
   el.btnCopyPair.addEventListener("click", () =>
     copyText(`${formatNum(Number(state.value))} ${state.fromUnit} = ${el.toValue.value} ${state.toUnit}`));
+  el.amount.addEventListener("input", convertCurrency);
+  el.fromCode.addEventListener("change", (e) => { state.currencyFrom = e.target.value; convertCurrency(); });
+  el.toCode.addEventListener("change", (e) => { state.currencyTo = e.target.value; convertCurrency(); });
+  el.btnSwapCurrency.addEventListener("click", swapCurrency);
+  el.btnRefresh.addEventListener("click", refreshRates);
+  el.btnCopyCurrency.addEventListener("click", () => copyText(el.result.value || ""));
+  el.btnCopyPairCurrency.addEventListener("click", () =>
+    copyText(`${formatMoney(Number(state.currencyAmount))} ${state.currencyFrom} = ${el.result.value} ${state.currencyTo}`));
   el.btnAbout.addEventListener("click", () => {
     if (el.aboutDialog && el.aboutDialog.showModal) el.aboutDialog.showModal();
   });
@@ -429,12 +704,10 @@
       try {
         const reg = await api.get_registry();
         if (reg && reg.ok) {
-          // Fetch factors for local common-grid math.
           state.registry = reg.categories.map((c) => ({ ...c, unitFactors: null }));
         }
       } catch (_) {}
     }
-    // Load raw factors for instant client-side common grid (non-temperature).
     await loadFactors(api);
     const first = state.registry[0];
     if (first) {
@@ -445,25 +718,7 @@
     }
     renderCategoryTabs();
     renderUnitSelects();
-    await convert();
+    await convertUnits();
     setTimeout(() => runUpdateCheck(api), 800);
   })();
-
-  // Pull factor tables once so the common grid renders without per-cell round-trips.
-  async function loadFactors(api) {
-    // Derive factors by asking host to convert 1 unit -> base for each unit.
-    for (const cat of state.registry) {
-      if (cat.id === "temperature") continue;
-      const factors = {};
-      // base factor is 1; compute others relative by converting 1 u -> base
-      for (const u of cat.units) {
-        try {
-          const r = await api.convert(cat.id, 1, u, cat.base);
-          factors[u] = r && r.ok ? r.result : null;
-        } catch (_) { factors[u] = null; }
-      }
-      factors[cat.base] = 1;
-      cat.unitFactors = factors;
-    }
-  }
 })();

@@ -1,14 +1,18 @@
-"""UnitConvert — convertisseur d'unités multi-catégories (100 % local).
+"""UnitConvert — convertisseur d'unités + devises (Frankfurter BCE).
 
-© 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
+© 2026 Mr-Aurevo-X · UnitConvert · free · updates not guaranteed
+Unités 100 % locales ; devises via Frankfurter (cache deviseconvert-rates.json).
 All rights reserved. Redistribution / reverse engineering without written consent forbidden.
 """
-# © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
+# © 2026 Mr-Aurevo-X · UnitConvert · free · updates not guaranteed
 from __future__ import annotations
 
 import json
 import os
 import sys
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -96,6 +100,96 @@ CATEGORY_ORDER = [
     "length", "mass", "temperature", "area",
     "volume", "data", "speed", "time",
 ]
+
+# --- Currency (ex-DeviseConvert / Frankfurter ECB) -------------------------
+FRANKFURTER_URL = "https://api.frankfurter.app/latest"
+CURRENCY_USER_AGENT = "UnitConvert/1.1 (+https://github.com/Mr-Aurevo-X/UnitConvert)"
+CACHE_NAME = "deviseconvert-rates.json"
+
+CURRENCY_NAMES = {
+    "EUR": "Euro", "USD": "US Dollar", "GBP": "British Pound",
+    "CHF": "Swiss Franc", "CAD": "Canadian Dollar", "AUD": "Australian Dollar",
+    "JPY": "Japanese Yen", "CNY": "Chinese Yuan", "SEK": "Swedish Krona",
+    "NOK": "Norwegian Krone", "DKK": "Danish Krone", "PLN": "Polish Zloty",
+    "CZK": "Czech Koruna", "HUF": "Hungarian Forint", "RON": "Romanian Leu",
+    "BGN": "Bulgarian Lev", "TRY": "Turkish Lira", "ISK": "Icelandic Krona",
+    "ILS": "Israeli Shekel", "INR": "Indian Rupee", "KRW": "South Korean Won",
+    "SGD": "Singapore Dollar", "HKD": "Hong Kong Dollar", "NZD": "New Zealand Dollar",
+    "MXN": "Mexican Peso", "BRL": "Brazilian Real", "ZAR": "South African Rand",
+    "MYR": "Malaysian Ringgit", "THB": "Thai Baht", "IDR": "Indonesian Rupiah",
+    "PHP": "Philippine Peso",
+}
+
+CURRENCY_SNAPSHOT: dict[str, Any] = {
+    "base": "EUR",
+    "date": "2025-06-02",
+    "source": "snapshot",
+    "rates": {
+        "EUR": 1.0, "USD": 1.135, "GBP": 0.842, "CHF": 0.936, "CAD": 1.556,
+        "AUD": 1.758, "JPY": 163.2, "CNY": 8.18, "SEK": 10.92, "NOK": 11.55,
+        "DKK": 7.46, "PLN": 4.26, "CZK": 24.85, "HUF": 402.5, "RON": 4.977,
+        "BGN": 1.9558, "TRY": 44.3, "ISK": 145.6, "ILS": 4.05, "INR": 97.1,
+        "KRW": 1562.0, "SGD": 1.463, "HKD": 8.9, "NZD": 1.905, "MXN": 22.0,
+        "BRL": 6.42, "ZAR": 20.3, "MYR": 4.81, "THB": 37.2, "IDR": 18450.0,
+        "PHP": 63.3,
+    },
+}
+
+
+def currency_cache_path() -> Path:
+    return _local_appdata() / CACHE_NAME
+
+
+def load_currency_cache() -> dict[str, Any] | None:
+    path = currency_cache_path()
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+        if isinstance(data, dict) and isinstance(data.get("rates"), dict):
+            data["source"] = "cache"
+            return data
+    except (OSError, json.JSONDecodeError, TypeError):
+        return None
+    return None
+
+
+def save_currency_cache(data: dict[str, Any]) -> None:
+    path = currency_cache_path()
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "base": data.get("base", "EUR"),
+            "date": data.get("date"),
+            "rates": data.get("rates", {}),
+            "fetchedAt": datetime.now(timezone.utc).isoformat(),
+        }
+        path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    except OSError:
+        pass
+
+
+def fetch_rates() -> dict[str, Any]:
+    """Fetch latest EUR-based rates from Frankfurter (ECB). Raises on failure."""
+    req = urllib.request.Request(
+        FRANKFURTER_URL,
+        headers={"User-Agent": CURRENCY_USER_AGENT, "Accept": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=12) as resp:
+        raw = resp.read()
+    data = json.loads(raw.decode("utf-8"))
+    rates = dict(data.get("rates") or {})
+    base = str(data.get("base") or "EUR")
+    rates[base] = 1.0
+    filtered = {k: float(v) for k, v in rates.items() if k in CURRENCY_NAMES}
+    if "EUR" not in filtered:
+        filtered["EUR"] = 1.0
+    return {
+        "base": base,
+        "date": str(data.get("date") or ""),
+        "source": "live",
+        "rates": filtered,
+    }
 
 
 def _temp_to_celsius(value: float, unit: str) -> float:
@@ -194,6 +288,8 @@ class Api(WindowChromeMixin):
     def __init__(self) -> None:
         self._window = None
         self._maximized = False
+        cached = load_currency_cache()
+        self._currency_data = cached if cached else dict(CURRENCY_SNAPSHOT)
 
     def set_window(self, window) -> None:
         WindowChromeMixin.set_window(self, window)
@@ -244,6 +340,76 @@ class Api(WindowChromeMixin):
                 "units": list(cat["units"].keys()),
             })
         return {"ok": True, "categories": cats}
+
+    def _currency_state(self) -> dict:
+        data = self._currency_data
+        codes = [c for c in CURRENCY_NAMES if c in data.get("rates", {})]
+        currencies = [{"code": c, "name": CURRENCY_NAMES[c]} for c in codes]
+        return {
+            "ok": True,
+            "base": data.get("base", "EUR"),
+            "date": data.get("date"),
+            "source": data.get("source", "snapshot"),
+            "offline": data.get("source") != "live",
+            "currencies": currencies,
+            "rates": data.get("rates", {}),
+        }
+
+    def get_currency_state(self) -> dict:
+        return self._currency_state()
+
+    def get_state(self) -> dict:
+        """DeviseConvert-compatible alias for currency state."""
+        return self._currency_state()
+
+    def refresh_rates(self) -> dict:
+        """Fetch live rates; on failure keep current data and report offline."""
+        try:
+            fresh = fetch_rates()
+            self._currency_data = fresh
+            save_currency_cache(fresh)
+            state = self._currency_state()
+            state["refreshed"] = True
+            return state
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError,
+                ValueError, json.JSONDecodeError) as exc:
+            state = self._currency_state()
+            state["refreshed"] = False
+            state["error"] = str(exc)
+            return state
+
+    def refresh(self) -> dict:
+        """DeviseConvert-compatible alias for refresh_rates."""
+        return self.refresh_rates()
+
+    def convert_currency(
+        self,
+        amount: float = 0.0,
+        fromCode: str = "EUR",
+        toCode: str = "USD",
+    ) -> dict:
+        try:
+            amt = float(amount)
+        except (TypeError, ValueError):
+            return {"ok": False, "error": "invalid_amount"}
+        rates = self._currency_data.get("rates", {})
+        f = str(fromCode).upper()
+        to = str(toCode).upper()
+        if f not in rates or to not in rates:
+            return {"ok": False, "error": "unknown_currency"}
+        in_eur = amt / rates[f]
+        result = in_eur * rates[to]
+        unit_rate = (1.0 / rates[f]) * rates[to]
+        return {
+            "ok": True,
+            "result": result,
+            "rate": unit_rate,
+            "fromCode": f,
+            "toCode": to,
+            "amount": amt,
+            "date": self._currency_data.get("date"),
+            "source": self._currency_data.get("source", "snapshot"),
+        }
 
     def convert(
         self,
