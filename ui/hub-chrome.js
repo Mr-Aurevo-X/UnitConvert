@@ -1,4 +1,9 @@
 /**
+ * Copyright (c) 2026 Mr-Aurevo-X. All rights reserved.
+ * SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+ * Author: Mr-Aurevo-X · https://github.com/Mr-Aurevo-X
+ */
+/**
  * Hub-style frameless chrome wiring (L'Atelier PC Command launcher pattern).
  * Requires pywebview js_api from WindowChromeMixin:
  * window_start_drag, window_start_resize, get_window_bounds, set_window_bounds,

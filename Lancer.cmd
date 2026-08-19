@@ -1,3 +1,7 @@
+:: Copyright (c) 2026 Mr-Aurevo-X. All rights reserved.
+:: SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+:: Author: Mr-Aurevo-X
+
 @echo off
 REM (c) 2026 Mr-Aurevo-X - UnitConvert - 100% local - free - updates not guaranteed
 REM Optional alias - same preference: exe first, then pythonw

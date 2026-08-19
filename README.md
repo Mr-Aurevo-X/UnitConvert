@@ -2,7 +2,7 @@
 
 **[Download UnitConvert.exe](https://github.com/Mr-Aurevo-X/UnitConvert/releases/latest/download/UnitConvert.exe)** · **[All releases](https://github.com/Mr-Aurevo-X/UnitConvert/releases)**
 
-> Direct Windows binary (latest). Open [Releases](https://github.com/Mr-Aurevo-X/UnitConvert/releases) if the right-sidebar “Releases” link is scrolled away — downloads are **not** under “Tags”.
+> Direct Windows binary (latest). Open [Releases](https://github.com/Mr-Aurevo-X/UnitConvert/releases) if the right-sidebar "Releases" link is scrolled away — downloads are **not** under "Tags".
 
 **© 2026 Mr-Aurevo-X — UnitConvert — 100% local — free — updates not guaranteed**
 
@@ -16,6 +16,9 @@ Multi-category unit + currency converter — units 100% local, currencies via Fr
 
 Double-cliquer sur `UnitConvert.exe` pour lancer (pas d'installation).  
 Double-click `UnitConvert.exe` to run (no install).
+
+Windows peut afficher « potentiellement dangereux » : les binaires ne sont pas signés Authenticode (pas de certificat éditeur payant). C’est un avertissement de réputation SmartScreen, pas un verdict antivirus.  
+Windows may flag the app as potentially unsafe: binaries are not Authenticode-signed (no paid publisher certificate). That is a SmartScreen reputation warning, not an antivirus verdict.
 
 ## Fonctions / Features (v1.1)
 
@@ -88,3 +91,8 @@ Coups de pouce volontaires · optional tips (app remains free) :
 
 [![PayPal](https://img.shields.io/badge/PayPal-Donate-39ff14?style=for-the-badge&logo=paypal&logoColor=00f0ff&labelColor=050807)](https://www.paypal.com/paypalme/aurevo1)
 [![Revolut](https://img.shields.io/badge/Revolut-mr__aurevo__x-00f0ff?style=for-the-badge&logo=revolut&logoColor=39ff14&labelColor=050807)](https://revolut.me/mr_aurevo_x)
+---
+
+Rêvée par **Mr-Aurevo-X**. Cursor a réalisé le rêve.
+
+[Discord](https://discord.com/users/406891052516114442) · [PayPal](https://www.paypal.com/paypalme/aurevo1) · [Revolut](https://revolut.me/mr_aurevo_x)
