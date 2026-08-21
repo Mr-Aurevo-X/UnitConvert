@@ -339,6 +339,17 @@ class Api(WindowChromeMixin):
     def get_suite_language(self) -> dict:
         return {"ok": True, "language": resolve_suite_language()}
 
+    def set_suite_language(self, lang: str = "fr") -> dict:
+        key = "en" if str(lang or "").strip().lower() == "en" else "fr"
+        app_updater.write_user_settings_merge({"language": key})
+        return {"ok": True, "language": key}
+
+    def set_update_check_pref(self, enabled: bool = True) -> dict:
+        return app_updater.set_github_update_check(bool(enabled))
+
+    def open_release_page(self, url: str = "") -> dict:
+        return app_updater.open_release_url(url or "")
+
     def get_suite_theme(self) -> dict:
         return {"ok": True, "theme": resolve_suite_theme()}
 
@@ -362,7 +373,7 @@ class Api(WindowChromeMixin):
         return app_updater.set_auto_update(bool(enabled))
 
     def set_check_updates(self, enabled: bool = True) -> dict:
-        return app_updater.set_check_updates(bool(enabled))
+        return app_updater.set_github_update_check(bool(enabled))
 
     def get_update_prefs(self) -> dict:
         return app_updater.get_update_prefs()

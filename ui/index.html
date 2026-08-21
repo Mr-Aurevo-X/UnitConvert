@@ -78,6 +78,10 @@
         <li data-i18n="legalLocal">100 % local — aucun cloud, aucune télémétrie</li>
         <li data-i18n="legalUpdates">100 % local sauf vérif. optionnelle GitHub Releases (désactivable)</li>
       </ul>
+      <div class="hub-lang-switch" id="langSwitch" role="group" aria-label="Langue" data-i18n-aria="langSwitchAria">
+        <button type="button" class="hub-lang-seg is-active" data-lang="fr" aria-pressed="true">FR</button>
+        <button type="button" class="hub-lang-seg" data-lang="en" aria-pressed="false">EN</button>
+      </div>
       <p class="privacy-note" id="privacyNote"
         data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Unités 100 % locales. Devises : Frankfurter (BCE) optionnel + cache. Vérif. GitHub Releases optionnelle (désactivable dans À propos)."
         data-privacy-en="Mr-Aurevo-X does not collect your data. Units 100% local. Currencies: optional Frankfurter (ECB) + cache. Optional GitHub Releases check (disable in About).">
@@ -107,7 +111,7 @@
           <span id="updateDetail"></span>
         </div>
         <div class="update-banner-actions">
-          <button type="button" class="btn accent" id="btnUpdateNow" data-i18n="btnUpdate">Mettre à jour</button>
+          <button type="button" class="btn accent" id="btnOpenRelease" data-i18n="btnOpenRelease">Ouvrir sur GitHub</button>
           <button type="button" class="btn ghost" id="btnUpdateLater" data-i18n="btnLater">Plus tard</button>
         </div>
       </div>
@@ -196,8 +200,12 @@
       </ul>
       <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
       <p class="about-note" data-i18n="aboutRights">Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.</p>
-      <p class="about-net" data-i18n="aboutNetNote">Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).</p>
-      <button type="button" class="btn" id="btnToggleUpdateCheck" data-i18n="btnDisableUpdateCheck">Désactiver la vérif. GitHub</button>
+      <p class="about-version" id="aboutVersion" data-i18n-prefix="aboutVersion">Version —</p>
+      <label class="about-toggle">
+        <input type="checkbox" id="chkGithubUpdates" checked />
+        <span data-i18n="aboutToggle">Vérifier les nouvelles versions sur GitHub</span>
+      </label>
+      <p class="about-note" id="aboutUpdateHint" data-i18n="aboutHintOn">Quand activé : un appel API GitHub au démarrage (lecture seule, pas de téléchargement).</p>
 
       <div class="about-repo" aria-label="Dépôt GitHub">
         <label class="about-repo-label" for="aboutRepoUrl" data-i18n="aboutRepoLabel">Repo GitHub (releases)</label>
@@ -217,6 +225,13 @@
         <p class="about-note" id="aboutPathCopyHint" hidden data-i18n="aboutPathCopied">Chemin copié.</p>
       </div>
 
+      <div class="about-legal-links" role="group" aria-label="Documents légaux">
+        <button type="button" class="btn ghost" data-legal="terms" data-i18n="aboutLegalTerms">CGU</button>
+        <button type="button" class="btn ghost" data-legal="privacy" data-i18n="aboutLegalPrivacy">Confidentialité</button>
+        <button type="button" class="btn ghost" data-legal="mentions" data-i18n="aboutLegalMentions">Mentions</button>
+        <button type="button" class="btn ghost" data-legal="notices" data-i18n="aboutLegalNotices">Notices</button>
+      </div>
+      <pre class="about-legal-body" id="aboutLegalBody" hidden></pre>
       <button type="submit" class="btn accent" data-i18n="btnClose">Fermer</button>
     </form>
   </dialog>

@@ -19,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.error
+import urllib.parse
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -76,6 +77,76 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
     data.update(patch)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
     return data
+
+
+def user_settings_path() -> Path:
+    return _local_appdata() / "user-settings.json"
+
+
+def read_user_settings() -> dict[str, Any]:
+    path = user_settings_path()
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError, TypeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def write_user_settings_merge(patch: dict[str, Any]) -> dict[str, Any]:
+    """Merge keys into %LOCALAPPDATA%/Mr-Aurevo-X/user-settings.json."""
+    current = read_user_settings()
+    current.update(patch or {})
+    path = user_settings_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(current, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return current
+
+
+def is_github_update_check_enabled() -> bool:
+    """Default True — opt-out via user-settings.checkGithubUpdates = false."""
+    val = read_user_settings().get("checkGithubUpdates")
+    if val is None:
+        # Migrate legacy per-app checkUpdates once.
+        legacy = load_settings().get("checkUpdates")
+        if legacy is False:
+            write_user_settings_merge({"checkGithubUpdates": False})
+            return False
+        return True
+    return bool(val)
+
+
+def set_github_update_check(enabled: bool) -> dict[str, Any]:
+    write_user_settings_merge({"checkGithubUpdates": bool(enabled)})
+    return {
+        "ok": True,
+        "checkGithubUpdates": bool(enabled),
+        "checkUpdates": bool(enabled),  # back-compat alias for older UI
+        "path": str(user_settings_path()),
+    }
+
+
+def open_release_url(url: str = "") -> dict[str, Any]:
+    """Open allowlisted Mr-Aurevo-X GitHub release page (no in-app download)."""
+    raw = (url or "").strip() or f"https://github.com/{RELEASE_REPO}/releases/latest"
+    parsed = urllib.parse.urlparse(raw)
+    host = (parsed.hostname or "").lower()
+    parts = [p for p in (parsed.path or "").split("/") if p]
+    org = (parts[0].lower() if parts else "")
+    if (
+        parsed.scheme != "https"
+        or host not in {"github.com", "www.github.com"}
+        or org != "mr-aurevo-x"
+        or "/releases" not in (parsed.path or "").lower()
+    ):
+        return {"ok": False, "error": "release URL rejected"}
+    try:
+        os.startfile(raw)  # type: ignore[attr-defined]
+        return {"ok": True, "url": raw}
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": str(exc), "url": raw}
+
 
 
 def is_frozen() -> bool:
@@ -185,8 +256,7 @@ def _pick_asset(release: dict) -> dict | None:
 
 def check_for_update() -> dict[str, Any]:
     """Non-blocking friendly: call from JS after UI boot."""
-    settings = load_settings()
-    if settings.get("checkUpdates") is False:
+    if not is_github_update_check_enabled():
         local = read_local_version()
         mode = "exe" if is_frozen() else "sources"
         return {
@@ -196,11 +266,13 @@ def check_for_update() -> dict[str, Any]:
             "remote": None,
             "error": None,
             "reason": "check_disabled",
+            "checkGithubUpdates": False,
             "checkUpdates": False,
-            "autoUpdate": bool(settings.get("autoUpdate")),
+            "autoUpdate": False,
             "mode": mode,
             "gitClone": is_git_clone(),
             "repo": RELEASE_REPO,
+            "htmlUrl": f"https://github.com/{RELEASE_REPO}/releases/latest",
         }
     local = read_local_version()
     settings = load_settings()
@@ -208,7 +280,8 @@ def check_for_update() -> dict[str, Any]:
     mode = "exe" if is_frozen() else "sources"
     base_meta = {
         "autoUpdate": bool(settings.get("autoUpdate")),
-        "checkUpdates": settings.get("checkUpdates", True) is not False,
+        "checkUpdates": is_github_update_check_enabled(),
+        "checkGithubUpdates": is_github_update_check_enabled(),
         "mode": mode,
         "gitClone": is_git_clone(),
         "repo": RELEASE_REPO,
@@ -278,20 +351,21 @@ def set_auto_update(enabled: bool) -> dict[str, Any]:
 
 
 def set_check_updates(enabled: bool) -> dict[str, Any]:
-    """Enable/disable the optional GitHub Releases version check (default: on)."""
-    data = save_settings({"checkUpdates": bool(enabled)})
-    return {"ok": True, "checkUpdates": bool(data.get("checkUpdates", True))}
+    """Alias — persist checkGithubUpdates in shared user-settings.json."""
+    return set_github_update_check(bool(enabled))
 
 
 def get_update_prefs() -> dict[str, Any]:
-    settings = load_settings()
+    enabled = is_github_update_check_enabled()
     return {
         "ok": True,
-        "checkUpdates": settings.get("checkUpdates", True) is not False,
-        "autoUpdate": bool(settings.get("autoUpdate")),
+        "checkGithubUpdates": enabled,
+        "checkUpdates": enabled,
+        "autoUpdate": False,
         "repo": RELEASE_REPO,
         "repoUrl": f"https://github.com/{RELEASE_REPO}",
     }
+
 
 
 def about_local_paths() -> dict[str, Any]:
@@ -314,22 +388,22 @@ def about_local_paths() -> dict[str, Any]:
     entries.append(
         {
             "id": "settings",
-            "label": f"Préférences {APP_NAME} (vérif. maj)",
-            "labelEn": f"{APP_NAME} prefs (update check)",
+            "label": f"Préférences {APP_NAME} (legacy)",
+            "labelEn": f"{APP_NAME} prefs (legacy)",
             "path": str(settings_path()),
-            "hint": "Fichier propre à cette app — safe à supprimer (réinitialise les prefs locales).",
-            "hintEn": "App-specific file — safe to delete (resets local prefs).",
+            "hint": "Ancien fichier app (skipVersion…) — safe à supprimer.",
+            "hintEn": "Legacy app file (skipVersion…) — safe to delete.",
         }
     )
     shared = _local_appdata() / "user-settings.json"
     entries.append(
         {
             "id": "shared",
-            "label": "Préférences partagées (accent, langue)",
-            "labelEn": "Shared prefs (accent, language)",
+            "label": "Préférences partagées (accent, langue, vérif. maj)",
+            "labelEn": "Shared prefs (accent, language, update check)",
             "path": str(shared),
-            "hint": "Partagé entre apps Mr-Aurevo-X — à garder si d’autres apps restent.",
-            "hintEn": "Shared across Mr-Aurevo-X apps — keep if other apps remain.",
+            "hint": "user-settings.json partagé (checkGithubUpdates) — à garder si d’autres apps restent.",
+            "hintEn": "Shared user-settings.json (checkGithubUpdates) — keep if other apps remain.",
         }
     )
     return {"ok": True, "paths": entries}
@@ -548,34 +622,15 @@ def _apply_via_exe_asset(release: dict, remote: str) -> dict[str, Any]:
 
 
 def apply_update() -> dict[str, Any]:
-    """Frozen: prefer Release asset exe. Source: git pull or zipball."""
-    local = read_local_version()
-    try:
-        raw = _http_get(API_LATEST)
-        release = json.loads(raw.decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        return {"ok": False, "applied": False, "local": local, "error": f"HTTP {exc.code}"}
-    except Exception as exc:  # noqa: BLE001
-        return {"ok": False, "applied": False, "local": local, "error": str(exc)}
+    """Disabled by ruleshub — Latest notice only; user installs from GitHub Releases."""
+    return {
+        "ok": False,
+        "applied": False,
+        "error": "in_app_update_disabled",
+        "message": "Install from GitHub Releases in your browser.",
+        "repoUrl": f"https://github.com/{RELEASE_REPO}/releases/latest",
+        "htmlUrl": f"https://github.com/{RELEASE_REPO}/releases/latest",
+    }
 
-    tag = str(release.get("tag_name") or release.get("name") or "").strip()
-    remote = _normalize_version(tag)
-    if not remote:
-        return {
-            "ok": True, "applied": False, "local": local, "remote": None,
-            "error": None, "reason": "no_releases",
-        }
-    if not is_newer(remote, local):
-        return {
-            "ok": True, "applied": False, "updateAvailable": False, "local": local,
-            "remote": remote, "error": None, "reason": "up_to_date",
-        }
 
-    if is_frozen():
-        return _apply_via_exe_asset(release, remote)
-    if is_git_clone():
-        return _apply_via_git_pull(remote)
-    asset = _pick_asset(release)
-    if asset and str(asset.get("name") or "").lower().endswith(".exe"):
-        return _apply_via_exe_asset(release, remote)
-    return _apply_via_source_zip(release, remote)
+

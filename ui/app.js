@@ -47,6 +47,17 @@
       aboutRepoLabel: "Repo GitHub (releases)",
       btnCopyRepo: "Copier",
       aboutCopied: "Lien copié.",
+
+      langSwitchAria: "Langue",
+      aboutToggle: "Vérifier les nouvelles versions sur GitHub",
+      aboutHintOn: "Quand activé : un appel API GitHub au démarrage (lecture seule, pas de téléchargement).",
+      aboutHintOff: "Désactivé : aucune requête GitHub. 100 % local hors actions utilisateur.",
+      aboutVersion: "Version {ver}",
+      aboutLegalTerms: "CGU",
+      aboutLegalPrivacy: "Confidentialité",
+      aboutLegalMentions: "Mentions",
+      aboutLegalNotices: "Notices",
+      btnOpenRelease: "Ouvrir sur GitHub",
       aboutPathsTitle: "Chemins locaux (désinstall / ménage)",
       aboutPathsIntro: "Identifie clairement quoi supprimer. Les préférences partagées Mr-Aurevo-X restent si d’autres apps les utilisent.",
       aboutPathCopied: "Chemin copié.",
@@ -125,6 +136,17 @@
       aboutRepoLabel: "GitHub repo (releases)",
       btnCopyRepo: "Copy",
       aboutCopied: "Link copied.",
+
+      langSwitchAria: "Language",
+      aboutToggle: "Check for new versions on GitHub",
+      aboutHintOn: "When on: one GitHub API call at startup (read-only, no download).",
+      aboutHintOff: "Off: no GitHub requests. 100% local except user actions.",
+      aboutVersion: "Version {ver}",
+      aboutLegalTerms: "Terms",
+      aboutLegalPrivacy: "Privacy",
+      aboutLegalMentions: "Legal notice",
+      aboutLegalNotices: "Notices",
+      btnOpenRelease: "Open on GitHub",
       aboutPathsTitle: "Local paths (uninstall / cleanup)",
       aboutPathsIntro: "Clear labels for what to remove. Shared Mr-Aurevo-X prefs stay if other apps use them.",
       aboutPathCopied: "Path copied.",
@@ -721,6 +743,125 @@
     }
   }
 
+  
+  function syncLangSwitch(lang) {
+    const root = document.getElementById("langSwitch");
+    if (!root) return;
+    root.querySelectorAll(".hub-lang-seg").forEach((btn) => {
+      const on = btn.getAttribute("data-lang") === lang;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  async function setAppLanguage(lang) {
+    const next = lang === "en" ? "en" : "fr";
+    try {
+      const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
+      if (api && api.set_suite_language) await api.set_suite_language(next);
+    } catch (_) {}
+    if (typeof suiteLang !== "undefined") suiteLang = next;
+    try { if (typeof state !== "undefined" && state) state.lang = next; } catch (_) {}
+    document.documentElement.lang = next;
+    syncLangSwitch(next);
+    if (typeof applyI18n === "function") applyI18n();
+    else if (window.suite && typeof window.suite.applyI18n === "function" && typeof SUITE_I18N !== "undefined") {
+      window.suite.applyI18n(next, SUITE_I18N);
+    }
+    if (typeof refreshLabels === "function") refreshLabels();
+    if (typeof applyLabels === "function") applyLabels();
+    try {
+      const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
+      await refreshUpdateCheckButton(api);
+      await fillAboutRepo(api);
+      await refreshAboutLocalPaths(api);
+      await refreshAboutVersion(api);
+    } catch (_) {}
+  }
+
+  async function refreshAboutVersion(api) {
+    const el = document.getElementById("aboutVersion");
+    if (!el) return;
+    let ver = "?";
+    try {
+      if (api && api.get_version) {
+        const r = await api.get_version();
+        if (r && r.version) ver = r.version;
+      }
+    } catch (_) {}
+    const tpl = typeof t === "function" ? t("aboutVersion") : "Version {ver}";
+    el.textContent = tpl.replace("{ver}", ver);
+  }
+
+  async function refreshGithubUpdateToggle(api) {
+    const chk = document.getElementById("chkGithubUpdates");
+    const hint = document.getElementById("aboutUpdateHint");
+    if (!chk) return;
+    let enabled = true;
+    try {
+      if (api && api.get_update_prefs) {
+        const prefs = await api.get_update_prefs();
+        if (prefs && prefs.ok) enabled = prefs.checkGithubUpdates !== false && prefs.checkUpdates !== false;
+      }
+    } catch (_) {}
+    chk.checked = enabled;
+    if (hint && typeof t === "function") hint.textContent = enabled ? t("aboutHintOn") : t("aboutHintOff");
+  }
+
+  async function wireRuleshubAbout() {
+    const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
+    await refreshGithubUpdateToggle(api);
+    await refreshAboutVersion(api);
+    const chk = document.getElementById("chkGithubUpdates");
+    if (chk && !chk.dataset.wired) {
+      chk.dataset.wired = "1";
+      chk.addEventListener("change", async () => {
+        const enabled = !!chk.checked;
+        try {
+          if (api && api.set_update_check_pref) await api.set_update_check_pref(enabled);
+          else if (api && api.set_check_updates) await api.set_check_updates(enabled);
+        } catch (_) {}
+        const hint = document.getElementById("aboutUpdateHint");
+        if (hint && typeof t === "function") hint.textContent = enabled ? t("aboutHintOn") : t("aboutHintOff");
+      });
+    }
+    document.querySelectorAll("[data-legal]").forEach((btn) => {
+      if (btn.dataset.wired) return;
+      btn.dataset.wired = "1";
+      btn.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        const kind = btn.getAttribute("data-legal");
+        const body = document.getElementById("aboutLegalBody");
+        if (!kind || !body) return;
+        const lang = (typeof suiteLang === "string" && suiteLang === "en") ? "en" : "fr";
+        const file = `${kind}.${lang}.md`;
+        try {
+          const res = await fetch(`legal/${file}`, { cache: "no-store" });
+          body.textContent = res.ok ? await res.text() : `Impossible de charger ${file}`;
+          body.hidden = false;
+        } catch (err) {
+          body.textContent = String(err);
+          body.hidden = false;
+        }
+      });
+    });
+  }
+
+  async function openReleaseInBrowser() {
+    const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
+    let url = "";
+    try {
+      if (window.__pendingReleaseUrl) url = window.__pendingReleaseUrl;
+      else if (api && api.get_update_prefs) {
+        const p = await api.get_update_prefs();
+        if (p && p.repoUrl) url = p.repoUrl + "/releases/latest";
+      }
+    } catch (_) {}
+    try {
+      if (api && api.open_release_page) await api.open_release_page(url || "");
+    } catch (_) {}
+  }
+
   async function fillAboutRepo(api) {
     const input = document.getElementById("aboutRepoUrl");
     if (!input) return;
@@ -761,6 +902,9 @@
   }
 
   async function refreshUpdateCheckButton(api) {
+    try { await refreshGithubUpdateToggle(api); } catch (_) {}
+    // legacy button (if still present)
+
     const btn = document.getElementById("btnToggleUpdateCheck");
     const note = document.querySelector(".about-net");
     if (!btn) return;
@@ -798,18 +942,14 @@
     try {
       if (api.get_update_prefs) {
         const prefs = await api.get_update_prefs();
-        if (prefs && prefs.ok && prefs.checkUpdates === false) return;
+        if (prefs && prefs.ok && (prefs.checkGithubUpdates === false || prefs.checkUpdates === false)) return;
       }
     } catch (_) {}
 
     try {
       const info = await api.check_for_update();
       if (!info || !info.ok || !info.updateAvailable) return;
-      if (info.autoUpdate && api.apply_update) {
-        setStatus(t("updateApplying"));
-        const res = await api.apply_update();
-        if (res && res.ok && res.applied) { setStatus(t("updateDone")); return; }
-      }
+      window.__pendingReleaseUrl = info.htmlUrl || (info.repo ? `https://github.com/${info.repo}/releases/latest` : "");
       showUpdateBanner(info);
     } catch (_) { /* offline / rate-limit — silent */ }
   }
@@ -871,16 +1011,25 @@
   el.btnCopyCurrency.addEventListener("click", () => copyText(el.result.value || ""));
   el.btnCopyPairCurrency.addEventListener("click", () =>
     copyText(`${formatMoney(Number(state.currencyAmount))} ${state.currencyFrom} = ${el.result.value} ${state.currencyTo}`));
+  
+  document.getElementById("langSwitch")?.addEventListener("click", (ev) => {
+    const seg = ev.target.closest(".hub-lang-seg");
+    if (!seg) return;
+    const lang = seg.getAttribute("data-lang");
+    if (lang) setAppLanguage(lang);
+  });
+  try {
+    const bootLang = (typeof suiteLang === "string") ? suiteLang : "fr";
+    syncLangSwitch(bootLang);
+  } catch (_) {}
+
   el.btnAbout.addEventListener("click", async () => {
     const api = await apiReady();
     await refreshUpdateCheckButton(api);
     await fillAboutRepo(api);
     await refreshAboutLocalPaths(api);
+    await wireRuleshubAbout();
     if (el.aboutDialog && el.aboutDialog.showModal) el.aboutDialog.showModal();
-  });
-  document.getElementById("btnToggleUpdateCheck")?.addEventListener("click", (ev) => {
-    ev.preventDefault();
-    toggleUpdateCheck();
   });
   document.getElementById("btnCopyRepo")?.addEventListener("click", (ev) => {
     ev.preventDefault();
@@ -889,12 +1038,14 @@
   document.getElementById("aboutRepoUrl")?.addEventListener("focus", (ev) => {
     try { ev.target.select(); } catch (_) {}
   });
-  if (el.btnUpdateNow) el.btnUpdateNow.addEventListener("click", applyUpdateNow);
+  const btnRel = document.getElementById("btnOpenRelease") || el.btnUpdateNow;
+  if (btnRel) btnRel.addEventListener("click", openReleaseInBrowser);
   if (el.btnUpdateLater) el.btnUpdateLater.addEventListener("click", dismissUpdateLater);
 
   (async () => {
     const api = await apiReady();
     await bootSuite(api);
+    try { syncLangSwitch(suiteLang); } catch (_) {}
     refreshChromeLabels();
     if (api && api.get_registry) {
       try {
