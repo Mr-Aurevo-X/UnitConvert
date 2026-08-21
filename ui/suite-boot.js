@@ -11,7 +11,7 @@
   const DEFAULT_ACCENT = "#e03545";
   const DEFAULT_THEME = "dark";
   const PRIVACY = {
-    fr: "Mr-Aurevo-X ne collecte aucune donnée. 100 % local. Seul appel réseau optionnel : vérif. GitHub Releases (désactivable dans À propos).",
+    fr: "Mr-Aurevo-X ne collecte aucune donnée. 100% local. Seul appel réseau optionnel : vérif. GitHub Releases (désactivable dans À propos).",
     en: "Mr-Aurevo-X does not collect your data. 100% local. Only optional network call: GitHub Releases version check (disable in About).",
   };
 
@@ -64,6 +64,10 @@
       const key = node.getAttribute("data-i18n-title");
       if (key && pack[key] != null) node.setAttribute("title", pack[key]);
     });
+    document.querySelectorAll("[data-i18n-aria]").forEach((node) => {
+      const key = node.getAttribute("data-i18n-aria");
+      if (key && pack[key] != null) node.setAttribute("aria-label", pack[key]);
+    });
     const privacy = document.getElementById("privacyNote") || document.querySelector(".privacy-note");
     if (privacy) {
       const custom = pack.privacy;
@@ -114,6 +118,8 @@
     normalizeTheme,
   };
 
+
+  global.suite = global.MrAurevoXSuite;
   /* PC Command embed: ?embed=1 -> body.pcd-embed (hub iframe) */
   function applyPcdEmbedClass() {
     try {

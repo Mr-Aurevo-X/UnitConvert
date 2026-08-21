@@ -15,7 +15,7 @@
 
   const SUITE_I18N = {
     fr: {
-      tagline: "Unités · 100 % local",
+      tagline: "Unités · 100% local",
       taglineCurrency: "Devises · taux BCE",
       copyright: "Copyright © 2026 Mr-Aurevo-X — tous droits réservés",
       title: "UnitConvert",
@@ -29,18 +29,20 @@
       featuresTitleCurrency: "Devises",
       featuresCurrency:
         "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — taux BCE en direct (Frankfurter), cache hors ligne, inversion, copie.",
-      privacy:
-        "Mr-Aurevo-X ne collecte aucune donnée. Unités 100 % locales. Devises : Frankfurter (BCE) optionnel + cache. Vérif. GitHub Releases optionnelle (désactivable dans À propos).",
-      badgeFree: "100 % gratuit",
+      privacy: "Détail légal, chemins locaux et options réseau : À propos.",
+      badgeFree: "100% gratuit",
       badgeEcb: "Taux BCE",
-      legalFree: "100 % gratuit",
-      legalLocal: "Unités 100 % locales — aucune télémétrie",
-      legalRates: "Devises : taux indicatifs BCE via Frankfurter (HTTPS)",
-      legalOffline: "Devises : réseau optionnel — cache local hors ligne",
-      legalUpdates: "100 % local sauf vérif. optionnelle GitHub Releases (désactivable)",
+      legalFree: "100% gratuit",
+      legalLocal:
+        "100% sans télémétrie — seule connexion : vérif. versions + taux de conversion",
+      legalRates:
+        "100% sans télémétrie — seule connexion : vérif. versions + taux de conversion",
+      legalOffline: "Cache local des taux si hors ligne",
+      legalUpdates:
+        "100% sans télémétrie — seule connexion : vérif. versions + taux de conversion",
       aboutTitle: "À propos — UnitConvert",
       aboutBody:
-        "Convertisseur d'unités et de devises Mr-Aurevo-X. Unités 100 % locales ; devises via Frankfurter (BCE), cache hors ligne. Gratuit, sans compte ni clé API. Mise à jour non garantie.",
+        "Convertisseur d'unités et de devises Mr-Aurevo-X. Unités 100% locales ; devises via Frankfurter (BCE), cache hors ligne. Gratuit, sans compte ni clé API. Mise à jour non garantie.",
       aboutRights:
         "Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.",
       btnAbout: "À propos",
@@ -49,9 +51,10 @@
       aboutCopied: "Lien copié.",
 
       langSwitchAria: "Langue",
+      supportNote: "Si le boulot te plaît, un café — sinon profite.",
       aboutToggle: "Vérifier les nouvelles versions sur GitHub",
       aboutHintOn: "Quand activé : un appel API GitHub au démarrage (lecture seule, pas de téléchargement).",
-      aboutHintOff: "Désactivé : aucune requête GitHub. 100 % local hors actions utilisateur.",
+      aboutHintOff: "Désactivé : aucune requête GitHub. 100% local hors actions utilisateur.",
       aboutVersion: "Version {ver}",
       aboutLegalTerms: "CGU",
       aboutLegalPrivacy: "Confidentialité",
@@ -64,7 +67,7 @@
       btnCopyPath: "Copier",
       btnDisableUpdateCheck: "Désactiver la vérif. GitHub",
       btnEnableUpdateCheck: "Réactiver la vérif. GitHub",
-      aboutNetNote: "Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).",
+      aboutNetNote: "Unités 100% locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).",
       btnClose: "Fermer",
       updateTitle: "Nouvelle version disponible",
       updateDetail: "v{local} → v{remote}",
@@ -118,15 +121,17 @@
       featuresTitleCurrency: "Currencies",
       featuresCurrency:
         "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — live ECB rates (Frankfurter), offline cache, invert, copy.",
-      privacy:
-        "Mr-Aurevo-X does not collect your data. Units 100% local. Currencies: optional Frankfurter (ECB) + cache. Optional GitHub Releases check (disable in About).",
+      privacy: "Legal details, local paths and network options: About.",
       badgeFree: "100% free",
       badgeEcb: "ECB rates",
       legalFree: "100% free",
-      legalLocal: "Units 100% local — no telemetry",
-      legalRates: "Currencies: indicative ECB rates via Frankfurter (HTTPS)",
-      legalOffline: "Currencies: network optional — local offline cache",
-      legalUpdates: "100% local except optional GitHub Releases check (can disable)",
+      legalLocal:
+        "100% no telemetry — only network: version check + conversion rates",
+      legalRates:
+        "100% no telemetry — only network: version check + conversion rates",
+      legalOffline: "Local rates cache when offline",
+      legalUpdates:
+        "100% no telemetry — only network: version check + conversion rates",
       aboutTitle: "About — UnitConvert",
       aboutBody:
         "Mr-Aurevo-X unit and currency converter. Units 100% local; currencies via Frankfurter (ECB), offline cache. Free, no account or API key. Updates not guaranteed.",
@@ -138,6 +143,7 @@
       aboutCopied: "Link copied.",
 
       langSwitchAria: "Language",
+      supportNote: "If you like the work, a coffee — otherwise enjoy.",
       aboutToggle: "Check for new versions on GitHub",
       aboutHintOn: "When on: one GitHub API call at startup (read-only, no download).",
       aboutHintOff: "Off: no GitHub requests. 100% local except user actions.",
@@ -278,7 +284,13 @@
   }
 
   function setStatus(msg) {
-    el.status.textContent = msg || "";
+    if (!el.status) return;
+    const text = msg || "";
+    el.status.textContent = text;
+    const readyFr = SUITE_I18N.fr.ready;
+    const readyEn = SUITE_I18N.en.ready;
+    const isReady = !!text && (text === t("ready") || text === readyFr || text === readyEn);
+    el.status.classList.toggle("is-ready", isReady);
   }
 
   function formatMoney(n) {
@@ -326,9 +338,7 @@
       if (el.legalStrip) {
         el.legalStrip.innerHTML =
           `<li>${t("legalFree")}</li>` +
-          `<li>${t("legalRates")}</li>` +
-          `<li>${t("legalOffline")}</li>` +
-          `<li>${t("legalUpdates")}</li>`;
+          `<li>${t("legalLocal")}</li>`;
       }
     } else {
       if (taglineEl) taglineEl.textContent = t("tagline");
@@ -344,8 +354,7 @@
       if (el.legalStrip) {
         el.legalStrip.innerHTML =
           `<li>${t("legalFree")}</li>` +
-          `<li>${t("legalLocal")}</li>` +
-          `<li>${t("legalUpdates")}</li>`;
+          `<li>${t("legalLocal")}</li>`;
       }
     }
   }
@@ -764,12 +773,21 @@
     try { if (typeof state !== "undefined" && state) state.lang = next; } catch (_) {}
     document.documentElement.lang = next;
     syncLangSwitch(next);
-    if (typeof applyI18n === "function") applyI18n();
-    else if (window.suite && typeof window.suite.applyI18n === "function" && typeof SUITE_I18N !== "undefined") {
-      window.suite.applyI18n(next, SUITE_I18N);
+    const suiteApi = window.MrAurevoXSuite || window.suite;
+    if (suiteApi && typeof suiteApi.applyI18n === "function" && typeof SUITE_I18N !== "undefined") {
+      suiteApi.applyI18n(next, SUITE_I18N);
     }
     if (typeof refreshLabels === "function") refreshLabels();
     if (typeof applyLabels === "function") applyLabels();
+    if (typeof refreshChromeLabels === "function") refreshChromeLabels();
+    try {
+      if (typeof updateSidebarForMode === "function") updateSidebarForMode();
+      if (typeof renderCategoryTabs === "function") renderCategoryTabs();
+      if (typeof renderUnitSelects === "function") renderUnitSelects();
+      if (typeof renderCurrencySelects === "function") renderCurrencySelects();
+      if (typeof convertUnits === "function") convertUnits();
+      if (typeof convertCurrency === "function") convertCurrency();
+    } catch (_) {}
     try {
       const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
       await refreshUpdateCheckButton(api);

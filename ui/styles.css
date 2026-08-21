@@ -245,6 +245,10 @@ select optgroup {
   color: var(--muted);
   min-height: 1.2em;
 }
+.status.is-ready {
+  color: #3dd68c;
+  font-weight: 600;
+}
 
 .about-dialog {
   border: none;

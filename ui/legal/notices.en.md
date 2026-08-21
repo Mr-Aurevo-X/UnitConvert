@@ -1,16 +1,14 @@
-Licenses / notices — PC Command / Mr-Aurevo-X Suite (PC Command)
+Licenses / notices — UnitConvert
 
-Mr-Aurevo-X source: PolyForm Noncommercial License 1.0.0 (`LICENSE`). Marks: `TRADEMARK.md`.
+Mr-Aurevo-X code: PolyForm Noncommercial License 1.0.0 (`LICENSE`).
 
-Possible third-party components (depending on the tool):
+Possible third-party components:
 - Python (PSF License)
 - pywebview
 - Microsoft Edge WebView2 Runtime
 - PyInstaller
-- psutil
-- deep_translator / Google Translate (Trad-X only)
-- Outfit / JetBrains Mono fonts
+- UI fonts (respective font licenses)
 
 Upstream licenses apply to those components.
 
-No automatic updates and no commitment to future versions.
+App provided without automatic updates and without a commitment to future versions.

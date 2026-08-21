@@ -368,23 +368,95 @@ def get_update_prefs() -> dict[str, Any]:
 
 
 
+def _raw_local_appdata() -> Path:
+    return Path(os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local"))
+
+
+def _user_desktop_dirs() -> list[Path]:
+    home = Path.home()
+    out: list[Path] = []
+    for rel in (
+        "Desktop",
+        "Bureau",
+        "OneDrive/Desktop",
+        "OneDrive/Bureau",
+        "OneDrive - Personal/Desktop",
+        "OneDrive - Personal/Bureau",
+    ):
+        p = home / Path(rel)
+        if p.is_dir():
+            out.append(p)
+    return out
+
+
+def resolve_app_exe_dir() -> Path | None:
+    """Folder containing the shipped exe when known — never monorepo/clone.
+
+    Frozen: parent of the running exe (Desktop, USB, Downloads…).
+    """
+    if is_frozen():
+        try:
+            return Path(sys.executable).resolve().parent
+        except OSError:
+            return None
+    raw = _raw_local_appdata()
+    search_roots: list[Path] = list(_user_desktop_dirs())
+    for name in ("Downloads", "Téléchargements", "Telechargements"):
+        p = Path.home() / name
+        if p.is_dir():
+            search_roots.append(p)
+            break
+    search_roots.extend(
+        [
+            raw / "Programs" / APP_NAME,
+            raw / APP_NAME,
+            raw / "Programs",
+            _local_appdata() / "Programs" / APP_NAME,
+        ]
+    )
+    seen: set[Path] = set()
+    for root in search_roots:
+        try:
+            root = root.resolve()
+        except OSError:
+            continue
+        if root in seen:
+            continue
+        seen.add(root)
+        direct = root / EXE_NAME
+        if direct.is_file():
+            return root
+        if not root.is_dir():
+            continue
+        try:
+            for child in root.iterdir():
+                if child.is_dir() and (child / EXE_NAME).is_file():
+                    return child.resolve()
+        except OSError:
+            continue
+    return None
+
+
 def about_local_paths() -> dict[str, Any]:
     """Labeled absolute paths for About — uninstall / manual cleanup.
 
     Never expose monorepo / SoT / clone paths (even via Lancer.cmd).
+    Install = real folder of the running / found exe (e.g. Desktop).
     """
     entries: list[dict[str, Any]] = []
-    if is_frozen():
+    exe_dir = resolve_app_exe_dir()
+    if exe_dir is not None:
         entries.append(
             {
                 "id": "app",
                 "label": "Install (dossier de l’exe)",
                 "labelEn": "Install (exe folder)",
-                "path": str(Path(sys.executable).resolve().parent),
-                "hint": f"Dossier portable {EXE_NAME} — supprimer ce dossier pour désinstaller.",
-                "hintEn": f"Portable {EXE_NAME} folder — delete this folder to uninstall.",
+                "path": str(exe_dir),
+                "hint": f"Dossier réel de {EXE_NAME} lancé (Bureau, USB, Downloads…) — à supprimer pour désinstaller.",
+                "hintEn": f"Real folder of the running {EXE_NAME} (Desktop, USB, Downloads…) — delete to uninstall.",
             }
         )
+
     entries.append(
         {
             "id": "settings",

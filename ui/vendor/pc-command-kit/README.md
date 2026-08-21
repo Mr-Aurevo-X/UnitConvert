@@ -40,7 +40,7 @@ Then hub `.\scripts\Sync-All-UiKit.ps1` to fan-out vendors.
 
 ### Presets
 
-- `void-glow` (default) — title bar minimale, glow only
+- `void-glow` (default) — title bar minimale + contrôles **min / max / close** (`.win-controls.text`), glow only
 - `pc-command` — cyber command center, accent `#e03545`
 - `soft-glass` — softer panels, lower glow
 - `neon-precision` — stronger cyan/amber telemetry accents
