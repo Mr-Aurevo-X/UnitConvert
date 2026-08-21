@@ -44,6 +44,9 @@
       aboutRights:
         "Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.",
       btnAbout: "À propos",
+      aboutRepoLabel: "Repo GitHub (releases)",
+      btnCopyRepo: "Copier",
+      aboutCopied: "Lien copié.",
       btnDisableUpdateCheck: "Désactiver la vérif. GitHub",
       btnEnableUpdateCheck: "Réactiver la vérif. GitHub",
       aboutNetNote: "Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).",
@@ -115,6 +118,9 @@
       aboutRights:
         "Redistribution, reverse engineering, or stripping copyright is forbidden without written consent.",
       btnAbout: "About",
+      aboutRepoLabel: "GitHub repo (releases)",
+      btnCopyRepo: "Copy",
+      aboutCopied: "Link copied.",
       btnDisableUpdateCheck: "Disable GitHub update check",
       btnEnableUpdateCheck: "Enable GitHub update check",
       aboutNetNote: "Units 100% local. Optional off-machine: Frankfurter (ECB) rates + GitHub Releases check (disable below).",
@@ -631,6 +637,46 @@
   
   let updateCheckEnabled = true;
 
+  
+  async function fillAboutRepo(api) {
+    const input = document.getElementById("aboutRepoUrl");
+    if (!input) return;
+    try {
+      let repo = null;
+      if (api && api.get_update_prefs) {
+        const prefs = await api.get_update_prefs();
+        if (prefs && prefs.repoUrl) repo = prefs.repoUrl;
+        else if (prefs && prefs.repo) repo = "https://github.com/" + prefs.repo;
+      }
+      if (!repo && api && api.get_version) {
+        const ver = await api.get_version();
+        if (ver && ver.repo) repo = "https://github.com/" + ver.repo;
+      }
+      if (repo) input.value = repo;
+    } catch (_) {}
+  }
+
+  async function copyAboutRepo() {
+    const input = document.getElementById("aboutRepoUrl");
+    const hint = document.getElementById("aboutCopyHint");
+    const url = (input && input.value || "").trim();
+    if (!url) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        input.focus();
+        input.select();
+        document.execCommand("copy");
+      }
+      if (hint) {
+        hint.hidden = false;
+        hint.textContent = typeof t === "function" ? t("aboutCopied") : "Lien copié.";
+        setTimeout(() => { hint.hidden = true; }, 1600);
+      }
+    } catch (_) {}
+  }
+
   async function refreshUpdateCheckButton(api) {
     const btn = document.getElementById("btnToggleUpdateCheck");
     const note = document.querySelector(".about-net");
@@ -645,6 +691,10 @@
       ? (typeof t === "function" ? t("btnDisableUpdateCheck") : "Désactiver la vérif. GitHub")
       : (typeof t === "function" ? t("btnEnableUpdateCheck") : "Réactiver la vérif. GitHub");
     if (note && typeof t === "function") note.textContent = t("aboutNetNote");
+    const repoLbl = document.querySelector('label[for="aboutRepoUrl"]');
+    const btnCopy = document.getElementById("btnCopyRepo");
+    if (repoLbl && typeof t === "function") repoLbl.textContent = t("aboutRepoLabel");
+    if (btnCopy && typeof t === "function") btnCopy.textContent = t("btnCopyRepo");
   }
 
   async function toggleUpdateCheck() {
@@ -656,6 +706,7 @@
       if (res && res.ok) updateCheckEnabled = res.checkUpdates !== false;
     } catch (_) {}
     await refreshUpdateCheckButton(api);
+    await fillAboutRepo(api);
   }
 
   async function runUpdateCheck(api) {
@@ -739,11 +790,19 @@
   el.btnAbout.addEventListener("click", async () => {
     const api = await apiReady();
     await refreshUpdateCheckButton(api);
+    await fillAboutRepo(api);
     if (el.aboutDialog && el.aboutDialog.showModal) el.aboutDialog.showModal();
   });
   document.getElementById("btnToggleUpdateCheck")?.addEventListener("click", (ev) => {
     ev.preventDefault();
     toggleUpdateCheck();
+  });
+  document.getElementById("btnCopyRepo")?.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    copyAboutRepo();
+  });
+  document.getElementById("aboutRepoUrl")?.addEventListener("focus", (ev) => {
+    try { ev.target.select(); } catch (_) {}
   });
   if (el.btnUpdateNow) el.btnUpdateNow.addEventListener("click", applyUpdateNow);
   if (el.btnUpdateLater) el.btnUpdateLater.addEventListener("click", dismissUpdateLater);

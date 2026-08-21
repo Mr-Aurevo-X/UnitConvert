@@ -198,6 +198,17 @@
       <p class="about-note" data-i18n="aboutRights">Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.</p>
       <p class="about-net" data-i18n="aboutNetNote">Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).</p>
       <button type="button" class="btn" id="btnToggleUpdateCheck" data-i18n="btnDisableUpdateCheck">Désactiver la vérif. GitHub</button>
+
+      <div class="about-repo" aria-label="Dépôt GitHub">
+        <label class="about-repo-label" for="aboutRepoUrl" data-i18n="aboutRepoLabel">Repo GitHub (releases)</label>
+        <div class="about-repo-row">
+          <input type="text" id="aboutRepoUrl" class="about-repo-input" readonly
+            value="https://github.com/Mr-Aurevo-X/UnitConvert" spellcheck="false" />
+          <button type="button" class="btn accent" id="btnCopyRepo" data-i18n="btnCopyRepo" title="Copier l’URL">Copier</button>
+        </div>
+        <p class="about-note" id="aboutCopyHint" hidden data-i18n="aboutCopied">Lien copié.</p>
+      </div>
+
       <button type="submit" class="btn accent" data-i18n="btnClose">Fermer</button>
     </form>
   </dialog>

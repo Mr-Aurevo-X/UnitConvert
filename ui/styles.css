@@ -293,3 +293,38 @@ select optgroup {
   width: 100%;
   margin: 0.35rem 0 0.55rem;
 }
+
+.about-repo {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.15rem 0 0.45rem;
+}
+.about-repo-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--mono, ui-monospace, monospace);
+}
+.about-repo-row {
+  display: flex;
+  gap: 0.45rem;
+  align-items: stretch;
+}
+.about-repo-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 0.78rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text);
+  user-select: all;
+}
+#btnCopyRepo {
+  flex: 0 0 auto;
+  min-width: 4.5rem;
+}

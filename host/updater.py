@@ -289,6 +289,8 @@ def get_update_prefs() -> dict[str, Any]:
         "ok": True,
         "checkUpdates": settings.get("checkUpdates", True) is not False,
         "autoUpdate": bool(settings.get("autoUpdate")),
+        "repo": RELEASE_REPO,
+        "repoUrl": f"https://github.com/{RELEASE_REPO}",
     }
 
 
