@@ -185,12 +185,30 @@ def _pick_asset(release: dict) -> dict | None:
 
 def check_for_update() -> dict[str, Any]:
     """Non-blocking friendly: call from JS after UI boot."""
+    settings = load_settings()
+    if settings.get("checkUpdates") is False:
+        local = read_local_version()
+        mode = "exe" if is_frozen() else "sources"
+        return {
+            "ok": True,
+            "updateAvailable": False,
+            "local": local,
+            "remote": None,
+            "error": None,
+            "reason": "check_disabled",
+            "checkUpdates": False,
+            "autoUpdate": bool(settings.get("autoUpdate")),
+            "mode": mode,
+            "gitClone": is_git_clone(),
+            "repo": RELEASE_REPO,
+        }
     local = read_local_version()
     settings = load_settings()
     skipped = str(settings.get("skipVersion") or "").strip()
     mode = "exe" if is_frozen() else "sources"
     base_meta = {
         "autoUpdate": bool(settings.get("autoUpdate")),
+        "checkUpdates": settings.get("checkUpdates", True) is not False,
         "mode": mode,
         "gitClone": is_git_clone(),
         "repo": RELEASE_REPO,
@@ -257,6 +275,22 @@ def dismiss_update(version: str | None = None) -> dict[str, Any]:
 def set_auto_update(enabled: bool) -> dict[str, Any]:
     data = save_settings({"autoUpdate": bool(enabled)})
     return {"ok": True, "autoUpdate": bool(data.get("autoUpdate"))}
+
+
+def set_check_updates(enabled: bool) -> dict[str, Any]:
+    """Enable/disable the optional GitHub Releases version check (default: on)."""
+    data = save_settings({"checkUpdates": bool(enabled)})
+    return {"ok": True, "checkUpdates": bool(data.get("checkUpdates", True))}
+
+
+def get_update_prefs() -> dict[str, Any]:
+    settings = load_settings()
+    return {
+        "ok": True,
+        "checkUpdates": settings.get("checkUpdates", True) is not False,
+        "autoUpdate": bool(settings.get("autoUpdate")),
+    }
+
 
 
 def _download_asset(asset_api_url: str | None, browser_url: str | None, dest: Path) -> None:

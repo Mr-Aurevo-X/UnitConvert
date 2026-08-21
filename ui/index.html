@@ -76,12 +76,12 @@
       <ul class="legal-strip" id="legalStrip">
         <li data-i18n="legalFree">100 % gratuit</li>
         <li data-i18n="legalLocal">100 % local — aucun cloud, aucune télémétrie</li>
-        <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
+        <li data-i18n="legalUpdates">100 % local sauf vérif. optionnelle GitHub Releases (désactivable)</li>
       </ul>
       <p class="privacy-note" id="privacyNote"
-        data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle."
-        data-privacy-en="Mr-Aurevo-X does not collect your data. Unit conversions are 100% local. Currencies: Frankfurter (ECB) rates over HTTPS, local cache. Optional GitHub update check.">
-        Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle.
+        data-privacy-fr="Mr-Aurevo-X ne collecte aucune donnée. Unités 100 % locales. Devises : Frankfurter (BCE) optionnel + cache. Vérif. GitHub Releases optionnelle (désactivable dans À propos)."
+        data-privacy-en="Mr-Aurevo-X does not collect your data. Units 100% local. Currencies: optional Frankfurter (ECB) + cache. Optional GitHub Releases check (disable in About).">
+        Mr-Aurevo-X ne collecte aucune donnée. Unités 100 % locales. Devises : Frankfurter (BCE) optionnel + cache. Vérif. GitHub Releases optionnelle (désactivable dans À propos).
       </p>
       <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
       <div class="hub-support" aria-label="Soutien optionnel">
@@ -192,10 +192,12 @@
         <li data-i18n="legalFree">100 % gratuit</li>
         <li data-i18n="legalLocal">Unités 100 % locales — aucune télémétrie</li>
         <li data-i18n="legalRates">Devises : taux indicatifs BCE via Frankfurter (HTTPS)</li>
-        <li data-i18n="legalUpdates">Mise à jour non garantie — vérif. optionnelle GitHub</li>
+        <li data-i18n="legalUpdates">100 % local sauf vérif. optionnelle GitHub Releases (désactivable)</li>
       </ul>
       <p class="copyright" data-i18n="copyright">Copyright © 2026 Mr-Aurevo-X — tous droits réservés</p>
       <p class="about-note" data-i18n="aboutRights">Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.</p>
+      <p class="about-net" data-i18n="aboutNetNote">Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).</p>
+      <button type="button" class="btn" id="btnToggleUpdateCheck" data-i18n="btnDisableUpdateCheck">Désactiver la vérif. GitHub</button>
       <button type="submit" class="btn accent" data-i18n="btnClose">Fermer</button>
     </form>
   </dialog>

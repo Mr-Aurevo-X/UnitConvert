@@ -79,7 +79,7 @@ Pour publier une màj : bumper `VERSION`, build, créer une **GitHub Release** a
 
 - Fichier version : `VERSION` à la racine (ex. `1.2.0`).
 - Au démarrage, vérif. **non bloquante** de `https://api.github.com/repos/Mr-Aurevo-X/UnitConvert/releases/latest`.
-- **Appels réseau optionnels** : vérif. / màj GitHub ; actualisation des taux devises (Frankfurter). Les conversions **unités** restent 100 % locales.
+- Appels réseau optionnels : taux devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable dans **À propos**). Unités 100 % locales.
 
 ## UI kit
 

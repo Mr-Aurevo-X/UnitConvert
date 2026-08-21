@@ -282,3 +282,14 @@ select optgroup {
     justify-self: center;
   }
 }
+
+.about-net {
+  margin: 0.55rem 0 0.35rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+#btnToggleUpdateCheck {
+  width: 100%;
+  margin: 0.35rem 0 0.55rem;
+}

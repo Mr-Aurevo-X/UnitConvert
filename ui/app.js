@@ -30,20 +30,23 @@
       featuresCurrency:
         "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — taux BCE en direct (Frankfurter), cache hors ligne, inversion, copie.",
       privacy:
-        "Mr-Aurevo-X ne collecte aucune donnée. Conversions unités 100 % locales. Devises : taux Frankfurter (BCE) en HTTPS, cache local. Vérif. màj GitHub optionnelle.",
+        "Mr-Aurevo-X ne collecte aucune donnée. Unités 100 % locales. Devises : Frankfurter (BCE) optionnel + cache. Vérif. GitHub Releases optionnelle (désactivable dans À propos).",
       badgeFree: "100 % gratuit",
       badgeEcb: "Taux BCE",
       legalFree: "100 % gratuit",
       legalLocal: "Unités 100 % locales — aucune télémétrie",
       legalRates: "Devises : taux indicatifs BCE via Frankfurter (HTTPS)",
       legalOffline: "Devises : réseau optionnel — cache local hors ligne",
-      legalUpdates: "Mise à jour non garantie — vérif. optionnelle GitHub",
+      legalUpdates: "100 % local sauf vérif. optionnelle GitHub Releases (désactivable)",
       aboutTitle: "À propos — UnitConvert",
       aboutBody:
         "Convertisseur d'unités et de devises Mr-Aurevo-X. Unités 100 % locales ; devises via Frankfurter (BCE), cache hors ligne. Gratuit, sans compte ni clé API. Mise à jour non garantie.",
       aboutRights:
         "Redistribution, reverse engineering ou suppression du copyright interdits sans accord écrit.",
       btnAbout: "À propos",
+      btnDisableUpdateCheck: "Désactiver la vérif. GitHub",
+      btnEnableUpdateCheck: "Réactiver la vérif. GitHub",
+      aboutNetNote: "Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).",
       btnClose: "Fermer",
       updateTitle: "Nouvelle version disponible",
       updateDetail: "v{local} → v{remote}",
@@ -98,20 +101,23 @@
       featuresCurrency:
         "EUR, USD, GBP, CHF, CAD, AUD, JPY, CNY… — live ECB rates (Frankfurter), offline cache, invert, copy.",
       privacy:
-        "Mr-Aurevo-X does not collect your data. Unit conversions are 100% local. Currencies: Frankfurter (ECB) rates over HTTPS, local cache. Optional GitHub update check.",
+        "Mr-Aurevo-X does not collect your data. Units 100% local. Currencies: optional Frankfurter (ECB) + cache. Optional GitHub Releases check (disable in About).",
       badgeFree: "100% free",
       badgeEcb: "ECB rates",
       legalFree: "100% free",
       legalLocal: "Units 100% local — no telemetry",
       legalRates: "Currencies: indicative ECB rates via Frankfurter (HTTPS)",
       legalOffline: "Currencies: network optional — local offline cache",
-      legalUpdates: "Updates not guaranteed — optional GitHub check",
+      legalUpdates: "100% local except optional GitHub Releases check (can disable)",
       aboutTitle: "About — UnitConvert",
       aboutBody:
         "Mr-Aurevo-X unit and currency converter. Units 100% local; currencies via Frankfurter (ECB), offline cache. Free, no account or API key. Updates not guaranteed.",
       aboutRights:
         "Redistribution, reverse engineering, or stripping copyright is forbidden without written consent.",
       btnAbout: "About",
+      btnDisableUpdateCheck: "Disable GitHub update check",
+      btnEnableUpdateCheck: "Enable GitHub update check",
+      aboutNetNote: "Units 100% local. Optional off-machine: Frankfurter (ECB) rates + GitHub Releases check (disable below).",
       btnClose: "Close",
       updateTitle: "New version available",
       updateDetail: "v{local} → v{remote}",
@@ -622,8 +628,45 @@
     if (el.updateBanner) el.updateBanner.hidden = true;
   }
 
+  
+  let updateCheckEnabled = true;
+
+  async function refreshUpdateCheckButton(api) {
+    const btn = document.getElementById("btnToggleUpdateCheck");
+    const note = document.querySelector(".about-net");
+    if (!btn) return;
+    try {
+      if (api && api.get_update_prefs) {
+        const prefs = await api.get_update_prefs();
+        if (prefs && prefs.ok) updateCheckEnabled = prefs.checkUpdates !== false;
+      }
+    } catch (_) {}
+    btn.textContent = updateCheckEnabled
+      ? (typeof t === "function" ? t("btnDisableUpdateCheck") : "Désactiver la vérif. GitHub")
+      : (typeof t === "function" ? t("btnEnableUpdateCheck") : "Réactiver la vérif. GitHub");
+    if (note && typeof t === "function") note.textContent = t("aboutNetNote");
+  }
+
+  async function toggleUpdateCheck() {
+    const api = typeof apiReady === "function" ? await apiReady() : (window.pywebview && window.pywebview.api);
+    if (!api || !api.set_check_updates) return;
+    const next = !updateCheckEnabled;
+    try {
+      const res = await api.set_check_updates(next);
+      if (res && res.ok) updateCheckEnabled = res.checkUpdates !== false;
+    } catch (_) {}
+    await refreshUpdateCheckButton(api);
+  }
+
   async function runUpdateCheck(api) {
     if (!api || !api.check_for_update) return;
+    try {
+      if (api.get_update_prefs) {
+        const prefs = await api.get_update_prefs();
+        if (prefs && prefs.ok && prefs.checkUpdates === false) return;
+      }
+    } catch (_) {}
+
     try {
       const info = await api.check_for_update();
       if (!info || !info.ok || !info.updateAvailable) return;
@@ -693,8 +736,14 @@
   el.btnCopyCurrency.addEventListener("click", () => copyText(el.result.value || ""));
   el.btnCopyPairCurrency.addEventListener("click", () =>
     copyText(`${formatMoney(Number(state.currencyAmount))} ${state.currencyFrom} = ${el.result.value} ${state.currencyTo}`));
-  el.btnAbout.addEventListener("click", () => {
+  el.btnAbout.addEventListener("click", async () => {
+    const api = await apiReady();
+    await refreshUpdateCheckButton(api);
     if (el.aboutDialog && el.aboutDialog.showModal) el.aboutDialog.showModal();
+  });
+  document.getElementById("btnToggleUpdateCheck")?.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    toggleUpdateCheck();
   });
   if (el.btnUpdateNow) el.btnUpdateNow.addEventListener("click", applyUpdateNow);
   if (el.btnUpdateLater) el.btnUpdateLater.addEventListener("click", dismissUpdateLater);
