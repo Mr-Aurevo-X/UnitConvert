@@ -12,9 +12,7 @@ Multi-category unit + currency converter — units 100% local, currencies via Fr
 
 ## Capture d'écran / Screenshot
 
-Filament Void Glow — title bar minimale (tb-min) + glow only, sans Accueil hub.
-
-![ UnitConvert Void Glow ](docs/screenshots/ui-void-glow.png)
+![UnitConvert](docs/screenshots/ui.png)
 
 ## Download / Téléchargement
 
