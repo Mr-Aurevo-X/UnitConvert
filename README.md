@@ -9,6 +9,13 @@
 Convertisseur d'unités et de devises — unités 100 % locales, devises via Frankfurter (ex-DeviseConvert).  
 Multi-category unit + currency converter — units 100% local, currencies via Frankfurter (ex-DeviseConvert).
 
+
+## Capture d'écran / Screenshot
+
+Void Glow UI (kit pc-command) — chrome outil, sans Accueil hub.
+
+![ UnitConvert Void Glow ](docs/screenshots/ui-void-glow.png)
+
 ## Download / Téléchargement
 
 - **One-click:** [UnitConvert.exe](https://github.com/Mr-Aurevo-X/UnitConvert/releases/latest/download/UnitConvert.exe)
@@ -20,7 +27,7 @@ Double-click `UnitConvert.exe` to run (no install).
 Windows peut afficher « potentiellement dangereux » : les binaires ne sont pas signés Authenticode (pas de certificat éditeur payant). C’est un avertissement de réputation SmartScreen, pas un verdict antivirus.  
 Windows may flag the app as potentially unsafe: binaries are not Authenticode-signed (no paid publisher certificate). That is a SmartScreen reputation warning, not an antivirus verdict.
 
-## Fonctions / Features (v1.1)
+## Fonctions / Features (v1.2)
 
 - **Unités** : longueur, masse, température, surface, volume, données (bit/B/KB/MB/GB/TB + KiB/MiB/GiB), vitesse, temps
 - **Devises** (ex-DeviseConvert) : EUR, USD, GBP, CHF, JPY, CNY… — taux BCE via Frankfurter, cache hors ligne (`deviseconvert-rates.json`)
@@ -72,7 +79,7 @@ Pour publier une màj : bumper `VERSION`, build, créer une **GitHub Release** a
 
 ## Version & mises à jour (optionnel)
 
-- Fichier version : `VERSION` à la racine (ex. `1.1.0`).
+- Fichier version : `VERSION` à la racine (ex. `1.2.0`).
 - Au démarrage, vérif. **non bloquante** de `https://api.github.com/repos/Mr-Aurevo-X/UnitConvert/releases/latest`.
 - **Appels réseau optionnels** : vérif. / màj GitHub ; actualisation des taux devises (Frankfurter). Les conversions **unités** restent 100 % locales.
 

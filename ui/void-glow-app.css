@@ -1,0 +1,19 @@
+/**
+ * Copyright (c) 2026 Mr-Aurevo-X. All rights reserved.
+ * SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+ */
+
+/* Void Glow — tool chrome polish (no Accueil / dashboard) */
+body.theme-void-glow .top-mode-tab:hover,
+body.theme-void-glow .mode-tab:hover,
+body.theme-void-glow .pcd-btn:hover,
+body.theme-void-glow button.primary:hover,
+body.theme-void-glow .btn.primary:hover,
+body.theme-void-glow .btn.accent:hover {
+  box-shadow: 0 0 0 1px rgba(224, 53, 69, 0.45), 0 0 28px rgba(224, 53, 69, 0.28);
+  border-color: rgba(224, 53, 69, 0.55);
+}
+body.theme-void-glow .top-mode-tab.active,
+body.theme-void-glow .mode-tab.active {
+  box-shadow: 0 0 18px rgba(224, 53, 69, 0.22);
+}
