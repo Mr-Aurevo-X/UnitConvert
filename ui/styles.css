@@ -328,3 +328,27 @@ select optgroup {
   flex: 0 0 auto;
   min-width: 4.5rem;
 }
+
+.about-paths {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.25rem 0 0.35rem;
+}
+.about-paths-list {
+  display: grid;
+  gap: 0.55rem;
+}
+.about-path-item {
+  display: grid;
+  gap: 0.25rem;
+}
+.about-path-item .about-path-label {
+  font-size: 0.78rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.about-path-item .about-path-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  line-height: 1.35;
+}

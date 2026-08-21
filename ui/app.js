@@ -47,6 +47,10 @@
       aboutRepoLabel: "Repo GitHub (releases)",
       btnCopyRepo: "Copier",
       aboutCopied: "Lien copié.",
+      aboutPathsTitle: "Chemins locaux (désinstall / ménage)",
+      aboutPathsIntro: "Identifie clairement quoi supprimer. Les préférences partagées Mr-Aurevo-X restent si d’autres apps les utilisent.",
+      aboutPathCopied: "Chemin copié.",
+      btnCopyPath: "Copier",
       btnDisableUpdateCheck: "Désactiver la vérif. GitHub",
       btnEnableUpdateCheck: "Réactiver la vérif. GitHub",
       aboutNetNote: "Unités 100 % locales. Hors machine optionnel : devises Frankfurter (BCE) + vérif. GitHub Releases (désactivable ci-dessous).",
@@ -121,6 +125,10 @@
       aboutRepoLabel: "GitHub repo (releases)",
       btnCopyRepo: "Copy",
       aboutCopied: "Link copied.",
+      aboutPathsTitle: "Local paths (uninstall / cleanup)",
+      aboutPathsIntro: "Clear labels for what to remove. Shared Mr-Aurevo-X prefs stay if other apps use them.",
+      aboutPathCopied: "Path copied.",
+      btnCopyPath: "Copy",
       btnDisableUpdateCheck: "Disable GitHub update check",
       btnEnableUpdateCheck: "Enable GitHub update check",
       aboutNetNote: "Units 100% local. Optional off-machine: Frankfurter (ECB) rates + GitHub Releases check (disable below).",
@@ -638,6 +646,81 @@
   let updateCheckEnabled = true;
 
   
+  
+  function aboutLangIsEn() {
+    try {
+      if (typeof suiteLang === "string") return suiteLang === "en";
+      if (typeof state !== "undefined" && state && state.lang === "en") return true;
+    } catch (_) {}
+    return false;
+  }
+
+  async function refreshAboutLocalPaths(api) {
+    const list = document.getElementById("aboutPathsList");
+    const pathHint = document.getElementById("aboutPathCopyHint");
+    const title = document.querySelector("#aboutPaths .about-repo-label");
+    const intro = document.querySelector("#aboutPaths > .about-note:not(#aboutPathCopyHint)");
+    if (!list) return;
+    if (title && typeof t === "function") title.textContent = t("aboutPathsTitle");
+    if (intro && typeof t === "function") intro.textContent = t("aboutPathsIntro");
+    list.replaceChildren();
+    let paths = [];
+    try {
+      if (api && api.get_about_local_paths) {
+        const r = await api.get_about_local_paths();
+        if (r && Array.isArray(r.paths)) paths = r.paths;
+      }
+    } catch (_) {}
+    const en = aboutLangIsEn();
+    for (const entry of paths) {
+      if (!entry || !entry.path) continue;
+      const item = document.createElement("div");
+      item.className = "about-path-item";
+      const label = document.createElement("div");
+      label.className = "about-path-label";
+      label.textContent = (en && entry.labelEn) ? entry.labelEn : (entry.label || entry.id || "");
+      const hint = document.createElement("div");
+      hint.className = "about-path-hint";
+      hint.textContent = (en && entry.hintEn) ? entry.hintEn : (entry.hint || "");
+      const row = document.createElement("div");
+      row.className = "about-repo-row";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "about-repo-input";
+      input.readOnly = true;
+      input.spellcheck = false;
+      input.value = entry.path;
+      input.addEventListener("focus", () => { try { input.select(); } catch (_) {} });
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn accent";
+      btn.textContent = typeof t === "function" ? t("btnCopyPath") : "Copier";
+      btn.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(entry.path);
+          } else {
+            input.focus();
+            input.select();
+            document.execCommand("copy");
+          }
+          if (pathHint) {
+            pathHint.hidden = false;
+            pathHint.textContent = typeof t === "function" ? t("aboutPathCopied") : "Chemin copié.";
+            setTimeout(() => { pathHint.hidden = true; }, 1600);
+          }
+        } catch (_) {}
+      });
+      row.appendChild(input);
+      row.appendChild(btn);
+      item.appendChild(label);
+      if (hint.textContent) item.appendChild(hint);
+      item.appendChild(row);
+      list.appendChild(item);
+    }
+  }
+
   async function fillAboutRepo(api) {
     const input = document.getElementById("aboutRepoUrl");
     if (!input) return;
@@ -707,6 +790,7 @@
     } catch (_) {}
     await refreshUpdateCheckButton(api);
     await fillAboutRepo(api);
+    await refreshAboutLocalPaths(api);
   }
 
   async function runUpdateCheck(api) {
@@ -791,6 +875,7 @@
     const api = await apiReady();
     await refreshUpdateCheckButton(api);
     await fillAboutRepo(api);
+    await refreshAboutLocalPaths(api);
     if (el.aboutDialog && el.aboutDialog.showModal) el.aboutDialog.showModal();
   });
   document.getElementById("btnToggleUpdateCheck")?.addEventListener("click", (ev) => {

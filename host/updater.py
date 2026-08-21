@@ -294,6 +294,48 @@ def get_update_prefs() -> dict[str, Any]:
     }
 
 
+def about_local_paths() -> dict[str, Any]:
+    """Labeled absolute paths for About — uninstall / manual cleanup.
+
+    Never expose monorepo / SoT / clone paths (even via Lancer.cmd).
+    """
+    entries: list[dict[str, Any]] = []
+    if is_frozen():
+        entries.append(
+            {
+                "id": "app",
+                "label": "Install (dossier de l’exe)",
+                "labelEn": "Install (exe folder)",
+                "path": str(Path(sys.executable).resolve().parent),
+                "hint": f"Dossier portable {EXE_NAME} — supprimer ce dossier pour désinstaller.",
+                "hintEn": f"Portable {EXE_NAME} folder — delete this folder to uninstall.",
+            }
+        )
+    entries.append(
+        {
+            "id": "settings",
+            "label": f"Préférences {APP_NAME} (vérif. maj)",
+            "labelEn": f"{APP_NAME} prefs (update check)",
+            "path": str(settings_path()),
+            "hint": "Fichier propre à cette app — safe à supprimer (réinitialise les prefs locales).",
+            "hintEn": "App-specific file — safe to delete (resets local prefs).",
+        }
+    )
+    shared = _local_appdata() / "user-settings.json"
+    entries.append(
+        {
+            "id": "shared",
+            "label": "Préférences partagées (accent, langue)",
+            "labelEn": "Shared prefs (accent, language)",
+            "path": str(shared),
+            "hint": "Partagé entre apps Mr-Aurevo-X — à garder si d’autres apps restent.",
+            "hintEn": "Shared across Mr-Aurevo-X apps — keep if other apps remain.",
+        }
+    )
+    return {"ok": True, "paths": entries}
+
+
+
 
 def _download_asset(asset_api_url: str | None, browser_url: str | None, dest: Path) -> None:
     url = (asset_api_url or browser_url or "").strip()

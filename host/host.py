@@ -367,6 +367,25 @@ class Api(WindowChromeMixin):
     def get_update_prefs(self) -> dict:
         return app_updater.get_update_prefs()
 
+    def get_about_local_paths(self) -> dict:
+        data = app_updater.about_local_paths()
+        paths = list(data.get("paths") or [])
+        try:
+            cache = currency_cache_path()
+            paths.append({
+                "id": "data-rates",
+                "label": "Cache taux devises (Frankfurter)",
+                "labelEn": "Currency rates cache (Frankfurter)",
+                "path": str(cache),
+                "hint": "Cache local des taux BCE — optionnel si tu n’utilises plus les devises.",
+                "hintEn": "Local ECB rates cache — optional if you no longer use currencies.",
+                "optional": True,
+            })
+        except Exception:
+            pass
+        data["paths"] = paths
+        return data
+
     def get_registry(self) -> dict:
         cats = []
         for name in CATEGORY_ORDER:
