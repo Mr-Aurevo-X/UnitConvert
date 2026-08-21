@@ -141,3 +141,47 @@ body.theme-void-glow .sec-label {
   text-transform: uppercase;
   color: var(--muted);
 }
+
+/* Optional support strip (same as hubs) */
+.hub-support {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.35rem;
+  margin-top: auto;
+}
+.hub-support-note {
+  margin: 0;
+  font-size: 0.64rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+.hub-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.hub-support-btn {
+  appearance: none;
+  border: 1px solid var(--border, var(--line));
+  background: transparent;
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  font: inherit;
+  font-size: 0.62rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.25s;
+}
+.hub-support-btn:hover {
+  color: var(--text);
+  border-color: rgba(224, 53, 69, 0.55);
+  box-shadow: 0 0 16px rgba(224, 53, 69, 0.25);
+  transform: none;
+}
+body.theme-void-glow .badge.free {
+  display: none !important;
+}
+
+.sidebar .hub-support { margin-top: auto; }
+.sidebar .about-btn { margin-top: 0.45rem; width: 100%; }

@@ -209,6 +209,26 @@
           });
       });
     });
+
+    // Optional support strip (Discord / PayPal / Revolut) — same as hubs
+    document.querySelector(".hub-support")?.addEventListener("click", async (ev) => {
+      const supportBtn = ev.target.closest("[data-support]");
+      if (!supportBtn) return;
+      const kind = supportBtn.dataset.support;
+      try {
+        const api = await ensureApi();
+        if (api && typeof api.open_support_url === "function") {
+          await api.open_support_url(kind);
+          return;
+        }
+      } catch (_) {}
+      try {
+        const url =
+          (globalThis.MrAurevoXSupport && MrAurevoXSupport.url(kind)) || "";
+        if (url) window.open(url, "_blank", "noopener,noreferrer");
+      } catch (_) {}
+    });
+
   }
 
   if (document.readyState === "loading") {

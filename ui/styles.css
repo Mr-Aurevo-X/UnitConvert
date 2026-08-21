@@ -76,7 +76,7 @@
   border-left: 2px solid var(--accent-dim);
 }
 .about-btn {
-  margin-top: auto;
+  margin-top: 0.45rem;
   width: 100%;
 }
 

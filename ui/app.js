@@ -279,7 +279,6 @@
       }
       if (el.badgeRow) {
         el.badgeRow.innerHTML =
-          `<span class="badge free">${t("badgeFree")}</span>` +
           `<span class="badge ecb">${t("badgeEcb")}</span>`;
       }
       if (el.legalStrip) {
@@ -298,8 +297,7 @@
       }
       if (el.badgeRow) {
         el.badgeRow.innerHTML =
-          `<span class="badge">LOCAL</span>` +
-          `<span class="badge free">${t("badgeFree")}</span>`;
+          `<span class="badge">LOCAL</span>`;
       }
       if (el.legalStrip) {
         el.legalStrip.innerHTML =
