@@ -220,3 +220,47 @@ body.theme-void-glow .about-card {
   max-height: min(88vh, 880px);
   box-sizing: border-box;
 }
+
+/* Optional support strip (hub-support-dons) — outline Void Glow, not .btn fill */
+body.theme-void-glow .hub-support {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.35rem;
+  margin-top: 0.25rem;
+}
+
+body.theme-void-glow .hub-support-note {
+  margin: 0;
+  font-size: 0.64rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+body.theme-void-glow .hub-support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+body.theme-void-glow .hub-support-btn {
+  appearance: none;
+  border: 1px solid var(--border, var(--line, rgba(255, 255, 255, 0.12)));
+  background: transparent !important;
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+  font: inherit;
+  font-size: 0.62rem;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.25s;
+}
+
+body.theme-void-glow .hub-support-btn:hover {
+  color: var(--text);
+  border-color: rgba(224, 53, 69, 0.55);
+  box-shadow: 0 0 16px rgba(224, 53, 69, 0.25) !important;
+  transform: none !important;
+}
