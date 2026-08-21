@@ -35,12 +35,15 @@ body.frameless:not(.pcd-embed) .shell {
 }
 
 body.frameless:not(.pcd-embed) .shell .sidebar,
-body.frameless:not(.pcd-embed) aside.sidebar {
+body.frameless:not(.pcd-embed) aside.sidebar,
+body.frameless:not(.pcd-embed) .shell .main,
+body.frameless:not(.pcd-embed) .main {
   overflow-x: hidden;
   overflow-y: auto;
   min-height: 0;
   max-height: 100%;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 /* ===== Title bar minimale (Filament void-glow / tb-min) ===== */
