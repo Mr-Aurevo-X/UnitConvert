@@ -67,7 +67,7 @@ python -m venv .venv
 ## Build .exe
 
 ```powershell
-cd "C:\Users\aurel\Documents\Dev Central Tree\Git Vitrine Public\UnitConvert"
+cd "C:\Users\aurel\Documents\Dev Central Tree\03_Standalones\UnitConvert"
 .\Build.cmd
 ```
 
