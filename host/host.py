@@ -27,6 +27,8 @@ _HOST_DIR = Path(__file__).resolve().parent
 if str(_HOST_DIR) not in sys.path:
     sys.path.insert(0, str(_HOST_DIR))
 
+import hub_update
+import hub_update
 import updater as app_updater
 from window_chrome import create_tool_window, WindowChromeMixin
 
@@ -300,15 +302,19 @@ class Api(WindowChromeMixin):
         WindowChromeMixin.set_window(self, window)
 
 
+    def list_crypto_donations(self) -> dict:
+        return hub_update.list_crypto_donations()
+
+    def copy_crypto_address(self, asset_id: str = "") -> dict:
+        return hub_update.copy_crypto_address(asset_id)
+
     def open_support_url(self, kind: str = "") -> dict:
-        """Open Discord / PayPal / Revolut in the default browser (allowlisted)."""
+        """Open Discord in the default browser (allowlisted). Crypto uses copy APIs."""
         urls = {
             "discord": "https://discord.com/users/406891052516114442",
-            "paypal": "https://www.paypal.com/paypalme/aurevo1",
-            "revolut": "https://revolut.me/mr_aurevo_x",
         }
         allowed = frozenset(
-            {"discord.com", "www.paypal.com", "paypal.com", "revolut.me"}
+            {"discord.com",   }
         )
         key = (kind or "").strip().lower()
         url = urls.get(key)
