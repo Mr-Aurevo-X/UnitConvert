@@ -1,12 +1,12 @@
-# -*- mode: python ; coding: utf-8 -*-
-# © 2026 Mr-Aurevo-X · UnitConvert · 100% local · free · updates not guaranteed
-# Proprietary binary — redistribution of sources/exe without written consent forbidden.
+﻿# -*- mode: python ; coding: utf-8 -*-
+# Â© 2026 Mr-Aurevo-X Â· UnitConvert Â· 100% local Â· free Â· updates not guaranteed
+# Proprietary binary â€” redistribution of sources/exe without written consent forbidden.
 
 a = Analysis(
     ['host\\host.py'],
     pathex=['host'],
     binaries=[],
-    datas=[('ui', 'ui'), ('VERSION', '.')],
+    datas=[('ui', 'ui'), ('VERSION', '.'), ('host/crypto_donations.json', '.')],
     hiddenimports=['clr', 'updater', 'window_chrome'],
     hookspath=[],
     hooksconfig={},
