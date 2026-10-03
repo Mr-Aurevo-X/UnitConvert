@@ -1,4 +1,4 @@
-﻿# -*- mode: python ; coding: utf-8 -*-
+# -*- mode: python ; coding: utf-8 -*-
 # Â© 2026 Mr-Aurevo-X Â· UnitConvert Â· 100% local Â· free Â· updates not guaranteed
 # Proprietary binary â€” redistribution of sources/exe without written consent forbidden.
 
