@@ -30,7 +30,7 @@ Use the app for its intended purpose (UnitConvert). Any network behavior is desc
 
 ## 5. Optional support
 
-Discord, PayPal, and Revolut links are **voluntary**. Donations are not a license fee and do not buy support or updates. Clicking those links leaves the local app.
+Discord and crypto tip links are **voluntary**. Donations are not a license fee and do not buy support or updates. Clicking those links leaves the local app.
 
 ## 6. Closed inner-source
 

@@ -30,7 +30,7 @@ Utilisez l’app conformément à son objet (UnitConvert). Les actions réseau �
 
 ## 5. Soutien optionnel
 
-Liens Discord, PayPal et Revolut : **volontaires**. Un don n’achète ni support ni mises à jour. Un clic quitte l’app locale.
+Liens Discord et dons crypto : **volontaires**. Un don n’achète ni support ni mises à jour. Un clic quitte l’app locale.
 
 ## 6. Inner-source fermé
 
